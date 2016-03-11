@@ -21,6 +21,7 @@ function Tower.new(world, x, y)
 end
 
 function Tower:draw()
+    love.graphics.setColor(235, 235, 235)
 	love.graphics.circle("line", self.body:getX(), self.body:getY(), RADIUS, 20)
 end
 

@@ -27,6 +27,7 @@ function Bullet:draw()
     if self.body == nil then
         return
     end
+    love.graphics.setColor(255, 255, 255)
 	love.graphics.circle("line", self.body:getX(), self.body:getY(), RADIUS, 9)
 end
 function Bullet:update(dt)

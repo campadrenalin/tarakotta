@@ -30,6 +30,7 @@ function Player.new(world, x, y)
 end
 
 function Player:draw()
+    love.graphics.setColor(20, 20, 255)
 	love.graphics.circle("line", self.body:getX(), self.body:getY(), RADIUS, 20)
 end
 
