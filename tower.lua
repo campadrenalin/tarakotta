@@ -5,7 +5,7 @@ Tower.__index = Tower
 local Bullet = require "bullet"
 
 local RADIUS = 8
-local COOLDOWN = 0.1
+local COOLDOWN = 0.01
 
 function Tower.new(world, x, y)
 	local tower = Entity.new(Tower, world, x, y, RADIUS, "static")
