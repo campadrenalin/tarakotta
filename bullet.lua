@@ -6,6 +6,9 @@ local RADIUS = 2
 
 function Bullet.new(world, x, y)
 	local bullet = Entity.new(Bullet, world, x, y, RADIUS, "dynamic")
+    bullet.fixture:setCategory(2)
+    bullet.fixture:setMask(1)
+
 	bullet.ttl = 2
 	return bullet
 end

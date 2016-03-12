@@ -9,6 +9,9 @@ local COOLDOWN = 0.01
 
 function Tower.new(world, x, y)
 	local tower = Entity.new(Tower, world, x, y, RADIUS, "static")
+    tower.fixture:setCategory(1)
+    tower.fixture:setMask(2)
+
     tower.cooldown = COOLDOWN
 	return tower
 end

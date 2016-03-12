@@ -20,6 +20,7 @@ local RADIUS = 4
 
 function Player.new(world, x, y)
 	local player = Entity.new(Player, world, x, y, RADIUS, "dynamic")
+    player.fixture:setCategory(3)
 	return player
 end
 
