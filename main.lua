@@ -1,6 +1,4 @@
-Tower = require "tower"
-towers = {}
-
+Tower  = require "tower"
 Player = require "player"
 Bullet = require "bullet"
 
@@ -8,14 +6,14 @@ function love.load()
 	world = love.physics.newWorld(0, 0, true)
 	-- world:setCallbacks
 	
-	player = Player.new(world, 100, 200)
+	Player.new(world, 100, 200)
 	for i=1,20 do
-		towers[i] = Tower.new(world, i*32, i*32)
+		Tower.new(world, i*32, i*32)
 	end
 end
 
 function love.draw()
-	player:draw()
+	Player:drawAll()
 	Tower:drawAll()
 	Bullet:drawAll()
 end
@@ -27,10 +25,9 @@ function love.update(dt)
 	if love.keyboard.isDown("escape") then
 		love.event.quit()
 	end
-	player:readKeys(Player.keymaps.arrows)
-	player:readKeys(Player.keymaps.wasd)
 
 	-- Per-object updates
+	Player:updateAll(dt)
 	Tower:updateAll(dt)
 	Bullet:updateAll(dt)
 end

@@ -1,4 +1,5 @@
-local Player = {}
+local Entity = require "entity"
+local Player = setmetatable({}, Entity);
 Player.__index = Player
 Player.keymaps = {
 	arrows = {
@@ -18,20 +19,17 @@ Player.keymaps = {
 local RADIUS = 4
 
 function Player.new(world, x, y)
-	local player = setmetatable({}, Player)
-	player.body    = love.physics.newBody(world, x, y, "dynamic")
-	player.shape   = love.physics.newCircleShape(RADIUS);
-	player.fixture = love.physics.newFixture(player.body, player.shape)
-
-	-- Circular reference, be sure to explicitly delete
-	player.body:setUserData(player)
-
+	local player = Entity.new(Player, world, x, y, RADIUS, "dynamic")
 	return player
 end
 
 function Player:draw()
-    love.graphics.setColor(20, 20, 255)
-	love.graphics.circle("line", self.body:getX(), self.body:getY(), RADIUS, 20)
+    self:drawCircle(RADIUS, 20,   20, 80, 255)
+end
+
+function Player:update()
+    self:readKeys(Player.keymaps.arrows)
+    self:readKeys(Player.keymaps.wasd)
 end
 
 function Player:readKeys(map)
@@ -41,7 +39,6 @@ function Player:readKeys(map)
 		end
 	end
 end
-
 function Player:_keypress(key)
 	if key == "up" then
 		self.body:applyForce(0, -20)
