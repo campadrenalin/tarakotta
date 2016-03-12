@@ -27,11 +27,7 @@ end
 
 function Tower:fireBullet()
     local b = self.body
-    local bullet = Bullet.new(
-        b:getWorld(),
-        b:getX(),
-        b:getY()
-    )
+    local bullet = Bullet.new(self.world, b:getX(), b:getY())
     bullet.body:applyLinearImpulse(
         love.math.random(-5, 5),
         love.math.random(-5, 5)
