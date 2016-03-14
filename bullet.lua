@@ -5,9 +5,9 @@ Bullet.__index = Bullet
 local RADIUS = 2
 
 function Bullet.new(world, x, y)
-	local bullet = Entity.new(Bullet, world, x, y, RADIUS, "dynamic")
-	bullet.ttl = 2
-	return bullet
+    local bullet = Entity.new(Bullet, world, x, y, RADIUS, "dynamic")
+    bullet.ttl = 2
+    return bullet
 end
 
 function Bullet:draw()

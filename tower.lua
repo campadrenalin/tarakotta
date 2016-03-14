@@ -8,9 +8,9 @@ local RADIUS = 8
 local COOLDOWN = 0.01
 
 function Tower.new(world, x, y)
-	local tower = Entity.new(Tower, world, x, y, RADIUS, "static")
+    local tower = Entity.new(Tower, world, x, y, RADIUS, "static")
     tower.cooldown = COOLDOWN
-	return tower
+    return tower
 end
 
 function Tower:draw()
@@ -18,7 +18,7 @@ function Tower:draw()
 end
 
 function Tower:update(dt)
-	self.cooldown = self.cooldown - dt
+    self.cooldown = self.cooldown - dt
     if self.cooldown < 0 then
         self.cooldown = COOLDOWN - self.cooldown
         self:fireBullet()
