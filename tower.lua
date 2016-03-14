@@ -5,12 +5,20 @@ Tower.__index = Tower
 local Bullet = require "bullet"
 
 local RADIUS = 8
+local SENSOR_RADIUS = 64
 local COOLDOWN = 0.01
 
 function Tower.new(world, x, y)
     local tower = Entity.new(Tower, world, x, y, RADIUS, "static")
     tower.fixture:setCategory(1)
     tower.fixture:setMask(2)
+
+    tower.sensor = {}
+    tower.sensor.shape   = love.physics.newCircleShape(SENSOR_RADIUS);
+    tower.sensor.fixture = love.physics.newFixture(tower.body, tower.sensor.shape)
+    tower.sensor.fixture:setCategory(1)
+    tower.sensor.fixture:setMask(2)
+    tower.sensor.fixture:setSensor(true)
 
     tower.cooldown = COOLDOWN
     return tower
@@ -36,6 +44,5 @@ function Tower:fireBullet()
         love.math.random(-5, 5)
     )
 end
-
 
 return Tower
