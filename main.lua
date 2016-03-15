@@ -1,10 +1,11 @@
 Tower  = require "tower"
 Player = require "player"
 Bullet = require "bullet"
+setupCallbacks = require "callbacks"
 
 function love.load()
     world = love.physics.newWorld(0, 0, true)
-    -- world:setCallbacks
+    setupCallbacks(world)
 
     Player.new(world, 100, 200)
     for i=1,20 do

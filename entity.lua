@@ -9,6 +9,9 @@ function Entity.new(class, world, x, y, radius, phystype)
     entity.fixture = love.physics.newFixture(entity.body, entity.shape)
     entity.world   = world
 
+    -- Configure basic physics
+    entity.fixture:setCategory(entity.physics_category)
+
     -- Insert into registry
     class.registry = class.registry or { nextID = 1 }
     entity.id = class.registry.nextID
@@ -30,6 +33,15 @@ end
 function Entity:destroy()
     self.body:destroy()
     self.class.registry[self.id] = nil
+end
+
+function Entity:beginContact(other, collision, alreadyBounced)
+    if alreadyBounced then return end
+    other:beginContact(self, collision, true)
+end
+function Entity:endContact(other, collision, alreadyBounced)
+    if alreadyBounced then return end
+    other:endContact(self, collision, true)
 end
 
 -- Class methods

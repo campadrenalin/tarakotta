@@ -1,13 +1,14 @@
 local Entity = require "entity"
 local Bullet = setmetatable({}, Entity);
 Bullet.__index = Bullet
+Bullet.physics_category = 2
 
 local RADIUS = 2
 
 function Bullet.new(world, x, y)
     local bullet = Entity.new(Bullet, world, x, y, RADIUS, "dynamic")
-    bullet.fixture:setCategory(2)
     bullet.fixture:setMask(1)
+    bullet.body:setBullet(true)
 
     bullet.ttl = 2
     return bullet

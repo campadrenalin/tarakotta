@@ -15,12 +15,17 @@ Player.keymaps = {
         d = "right",
     },
 }
+Player.physics_category = 3
 
 local RADIUS = 4
+local FORCE  = 80
+local DAMP   = 2.3
+local SMOOTH = 10
 
 function Player.new(world, x, y)
     local player = Entity.new(Player, world, x, y, RADIUS, "dynamic")
-    player.fixture:setCategory(3)
+    player.fixture:setRestitution(0.7)
+    player.body:setLinearDamping(DAMP)
     return player
 end
 
@@ -40,15 +45,20 @@ function Player:readKeys(map)
         end
     end
 end
+function Player:keyforce(x, y)
+    local vx, vy = self.body:getLinearVelocity()
+    self.body:applyForce(x, y) -- Raw force
+    self.body:applyForce((x-vx)/SMOOTH, (y-vy)/SMOOTH) -- For agility: (speed_wanted - speed_have)/SMOOTH
+end
 function Player:_keypress(key)
     if key == "up" then
-        self.body:applyForce(0, -20)
+        self:keyforce(0, -FORCE)
     elseif key == "down" then
-        self.body:applyForce(0, 20)
+        self:keyforce(0, FORCE)
     elseif key == "left" then
-        self.body:applyForce(-20, 0)
+        self:keyforce(-FORCE, 0)
     elseif key == "right" then
-        self.body:applyForce(20,  0)
+        self:keyforce(FORCE,  0)
     end
 end
 
