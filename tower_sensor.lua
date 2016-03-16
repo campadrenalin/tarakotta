@@ -14,14 +14,11 @@ function Sensor.new(world, x, y, tower)
     return sensor
 end
 
-function Sensor:ownerName()
-    if self.tower.owner == nil then return nil end
-    return self.tower.owner.name
-end
-
 function Sensor:beginContact(other, collision, alreadyBounced)
     local t = self.tower
-    if other.physics_category == 3 and other.name ~= self:ownerName() then
+    if other.physics_category == 3
+            and t.owner ~= nil
+            and other.name ~= t.owner.name then
         t.target = other
     end
     if not alreadyBounced then
