@@ -22,6 +22,7 @@ local FORCE  = 80
 local DAMP   = 2.3
 local SMOOTH = 10
 
+-- TODO: Limited HP
 function Player.new(world, x, y, name, color, keymap)
     local player = Entity.new(Player, world, x, y, RADIUS, "dynamic")
     player.fixture:setRestitution(0.7)
