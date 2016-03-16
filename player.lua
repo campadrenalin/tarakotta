@@ -22,20 +22,24 @@ local FORCE  = 80
 local DAMP   = 2.3
 local SMOOTH = 10
 
-function Player.new(world, x, y)
+function Player.new(world, x, y, name, color, keymap)
     local player = Entity.new(Player, world, x, y, RADIUS, "dynamic")
     player.fixture:setRestitution(0.7)
     player.body:setLinearDamping(DAMP)
+
+    player.name   = name
+    player.color  = color
+    player.keymap = keymap
     return player
 end
 
 function Player:draw()
-    self:drawCircle(RADIUS, 20,   20, 80, 255)
+    local c = self.color
+    self:drawCircle(RADIUS, 20,   c.red, c.green, c.blue)
 end
 
 function Player:update()
-    self:readKeys(Player.keymaps.arrows)
-    self:readKeys(Player.keymaps.wasd)
+    self:readKeys(self.keymap)
 end
 
 function Player:readKeys(map)
