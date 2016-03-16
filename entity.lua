@@ -25,6 +25,9 @@ function Entity.new(class, world, x, y, radius, phystype)
 end
 
 -- Individual methods
+function Entity:draw() end
+function Entity:update() end
+
 function Entity:drawCircle(radius,quality, r,g,b)
     love.graphics.setColor(r, g, b)
     love.graphics.circle("line", self.body:getX(), self.body:getY(), radius, quality)

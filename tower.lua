@@ -4,30 +4,45 @@ Tower.__index = Tower
 Tower.physics_category = 1
 
 local Bullet = require "bullet"
+local Sensor = require "tower_sensor"
 require "extra_math"
 
 local RADIUS = 8
 local SENSOR_RADIUS = 128
 local COOLDOWN = 0.05
 
+-- TODO: Track multiple ongoing encroachments
 function Tower.new(world, x, y)
-    local tower = Entity.new(Tower, world, x, y, RADIUS, "static")
+    local tower  = Entity.new(Tower, world, x, y, RADIUS, "static")
+    tower.sensor = Sensor.new(world, x, y, tower)
     tower.fixture:setMask(2)
 
-    tower.sensor = {}
-    tower.sensor.shape   = love.physics.newCircleShape(SENSOR_RADIUS);
-    tower.sensor.fixture = love.physics.newFixture(tower.body, tower.sensor.shape)
-    tower.sensor.fixture:setCategory(1)
-    tower.sensor.fixture:setMask(2)
-    tower.sensor.fixture:setSensor(true)
-
+    tower.owner  = nil
     tower.target = nil
     tower.cooldown = COOLDOWN
     return tower
 end
 
+function Tower:color()
+    if self.owner ~= nil then
+        return self.owner.color
+    else
+        return { red = 255, green = 255, blue = 255 }
+    end
+end
+
 function Tower:draw()
-    self:drawCircle(RADIUS, 20,   235, 235, 235)
+    local c = self:color()
+    self:drawCircle(RADIUS, 20,   c.red, c.green, c.blue)
+end
+
+function Tower:beginContact(other, collision, alreadyBounced)
+    if other.physics_category == 3 then
+        self.owner = other
+    end
+    if not alreadyBounced then
+        return other:beginContact(self, collision, true)
+    end
 end
 
 function Tower:update(dt)
@@ -39,24 +54,6 @@ function Tower:update(dt)
         self:fireBullet(self.target)
     end
 end
-
-function Tower:beginContact(other, collision, alreadyBounced)
-    if other.physics_category == 3 then
-        self.target = other
-    end
-    if not alreadyBounced then
-        return other:beginContact(self, collision, true)
-    end
-end
-function Tower:endContact(other, collision, alreadyBounced)
-    if other.physics_category == 3 then
-        self.target = nil
-    end
-    if not alreadyBounced then
-        return other:endContact(self, collision, true)
-    end
-end
-
 
 function Tower:fireBullet(target)
     local b  = self.body
