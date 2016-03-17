@@ -15,7 +15,7 @@ function Bullet.new(world, x, y)
 end
 
 function Bullet:draw()
-    self:drawCircle(RADIUS, 9,   255, 255, 255)
+    self:drawCircle(RADIUS, 9)
 end
 function Bullet:update(dt)
     self.ttl = self.ttl - dt

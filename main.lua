@@ -3,17 +3,8 @@ Player = require "player"
 Bullet = require "bullet"
 setupCallbacks = require "callbacks"
 
-local blue = {
-    red   = 20,
-    green = 50,
-    blue  = 255
-}
-local red = {
-    red   = 255,
-    green = 50,
-    blue  = 20
-}
-
+local blue = { r =  20, g = 50, b = 255 }
+local red  = { r = 255, g = 50, b =  20 }
 
 function love.load()
     world = love.physics.newWorld(0, 0, true)

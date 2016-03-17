@@ -35,8 +35,7 @@ function Player.new(world, x, y, name, color, keymap)
 end
 
 function Player:draw()
-    local c = self.color
-    self:drawCircle(RADIUS, 20,   c.red, c.green, c.blue)
+    self:drawCircle(RADIUS, 20)
 end
 
 function Player:update()

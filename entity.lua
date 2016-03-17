@@ -1,5 +1,6 @@
 local Entity = {}
 Entity.__index = Entity
+Entity.color = { r = 255, g = 255, b = 255 }
 
 function Entity.new(class, world, x, y, radius, phystype)
     local entity = setmetatable({}, class)
@@ -28,8 +29,9 @@ end
 function Entity:draw() end
 function Entity:update() end
 
-function Entity:drawCircle(radius,quality, r,g,b)
-    love.graphics.setColor(r, g, b)
+function Entity:drawCircle(radius,quality, c)
+    c = c or self.color
+    love.graphics.setColor(c.r, c.g, c.b)
     love.graphics.circle("line", self.body:getX(), self.body:getY(), radius, quality)
 end
 

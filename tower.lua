@@ -10,6 +10,7 @@ require "extra_math"
 local RADIUS = 8
 local SENSOR_RADIUS = 128
 local COOLDOWN = 0.05
+local MAX_AMMO = 100
 
 -- TODO: Limited ammo
 -- TODO: Track multiple ongoing encroachments
@@ -18,28 +19,26 @@ function Tower.new(world, x, y)
     tower.sensor = Sensor.new(world, x, y, tower)
     tower.fixture:setMask(2)
 
+    tower.ammo   = 0
     tower.owner  = nil
     tower.target = nil
     tower.cooldown = COOLDOWN
     return tower
 end
 
-function Tower:color()
-    if self.owner ~= nil then
-        return self.owner.color
-    else
-        return { red = 255, green = 255, blue = 255 }
-    end
+function Tower:setOwner(owner)
+    self.owner = owner
+    self.color = owner.color
+    self.ammo  = MAX_AMMO
 end
 
 function Tower:draw()
-    local c = self:color()
-    self:drawCircle(RADIUS, 20,   c.red, c.green, c.blue)
+    self:drawCircle(RADIUS, 20)
 end
 
 function Tower:beginContact(other, collision, alreadyBounced)
     if other.physics_category == 3 then
-        self.owner = other
+        self:setOwner(other)
     end
     if not alreadyBounced then
         return other:beginContact(self, collision, true)
@@ -66,6 +65,7 @@ function Tower:fireBullet(target)
         speed * math.cos(angle),
         speed * math.sin(angle)
     )
+    bullet.color = self.color
 end
 
 return Tower
