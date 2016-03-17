@@ -17,17 +17,24 @@ Player.keymaps = {
 }
 Player.physics_category = 3
 
+require "extra_math"
+
 local RADIUS = 4
 local FORCE  = 80
 local DAMP   = 2.3
 local SMOOTH = 10
+local DAMAGE_COLOR = { r = 255, g = 255, b = 255 }
+local MAX_HEALTH   = 100
+local RECOVER_TIME = 3 -- in seconds
 
 -- TODO: Limited HP
 function Player.new(world, x, y, name, color, keymap)
     local player = Entity.new(Player, world, x, y, RADIUS, "dynamic")
     player.fixture:setRestitution(0.7)
     player.body:setLinearDamping(DAMP)
+    player.respawn_coordinates = { x = x, y = y }
 
+    player.hp     = MAX_HEALTH
     player.name   = name
     player.color  = color
     player.keymap = keymap
@@ -36,10 +43,43 @@ end
 
 function Player:draw()
     self:drawCircle(RADIUS, 20)
+
+    if self.hp < MAX_HEALTH then
+        local fill_radius = math.lerp(RADIUS, 0, self.hp/MAX_HEALTH)
+        self:drawCircle(fill_radius, 20, DAMAGE_COLOR, "fill")
+    end
 end
 
-function Player:update()
+function Player:update(dt)
     self:readKeys(self.keymap)
+
+    -- Auto-healing
+    self.hp = self.hp + (dt * MAX_HEALTH / RECOVER_TIME)
+    if self.hp > MAX_HEALTH then
+        self.hp = MAX_HEALTH
+    end
+end
+function Player:beginContact(other, collision, alreadyBounced)
+    if other.physics_category == 2 then -- bullet
+        local vx, vy = other.body:getLinearVelocity()
+        local speed = math.dist(0,0,vx,vy)
+        self.hp = self.hp - speed/20
+        if self.hp < 0 then
+            self:die()
+        end
+
+        other:destroy()
+        return
+    end
+    if not alreadyBounced then
+        return other:beginContact(self, collision, true)
+    end
+end
+function Player:die()
+    local coords = self.respawn_coordinates
+    self.hp = 0
+    self.body:setLinearVelocity(0,0)
+    -- self.body:setPosition(coords.x, coords.y)
 end
 
 function Player:readKeys(map)
