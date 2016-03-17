@@ -10,9 +10,8 @@ require "extra_math"
 local RADIUS = 8
 local SENSOR_RADIUS = 128
 local COOLDOWN = 0.05
-local MAX_AMMO = 100
+local MAX_AMMO = 50
 
--- TODO: Limited ammo
 -- TODO: Track multiple ongoing encroachments
 function Tower.new(world, x, y)
     local tower  = Entity.new(Tower, world, x, y, RADIUS, "static")
@@ -33,7 +32,11 @@ function Tower:setOwner(owner)
 end
 
 function Tower:draw()
-    self:drawCircle(RADIUS, 20)
+    self:drawCircle(RADIUS, 20, nil)
+    if self.ammo > 0 then
+        local fill_radius = math.lerp(Bullet.radius, RADIUS, self.ammo/MAX_AMMO)
+        self:drawCircle(fill_radius, 20, nil, "fill")
+    end
 end
 
 function Tower:beginContact(other, collision, alreadyBounced)
@@ -49,8 +52,9 @@ function Tower:update(dt)
     if self.target == nil then return end
 
     self.cooldown = self.cooldown - dt
-    if self.cooldown < 0 then
+    if self.cooldown < 0 and self.ammo > 0 then
         self.cooldown = COOLDOWN - self.cooldown
+        self.ammo = self.ammo - 1
         self:fireBullet(self.target)
     end
 end

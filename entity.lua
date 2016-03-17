@@ -29,10 +29,11 @@ end
 function Entity:draw() end
 function Entity:update() end
 
-function Entity:drawCircle(radius,quality, c)
+function Entity:drawCircle(radius,quality, c, style)
     c = c or self.color
+    style = style or "line"
     love.graphics.setColor(c.r, c.g, c.b)
-    love.graphics.circle("line", self.body:getX(), self.body:getY(), radius, quality)
+    love.graphics.circle(style, self.body:getX(), self.body:getY(), radius, quality)
 end
 
 function Entity:destroy()

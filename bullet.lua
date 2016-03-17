@@ -2,11 +2,10 @@ local Entity = require "entity"
 local Bullet = setmetatable({}, Entity);
 Bullet.__index = Bullet
 Bullet.physics_category = 2
-
-local RADIUS = 2
+Bullet.radius = 2
 
 function Bullet.new(world, x, y)
-    local bullet = Entity.new(Bullet, world, x, y, RADIUS, "dynamic")
+    local bullet = Entity.new(Bullet, world, x, y, Bullet.radius, "dynamic")
     bullet.fixture:setMask(1)
     bullet.body:setBullet(true)
 
@@ -15,7 +14,7 @@ function Bullet.new(world, x, y)
 end
 
 function Bullet:draw()
-    self:drawCircle(RADIUS, 9)
+    self:drawCircle(Bullet.radius, 9, nil, "fill")
 end
 function Bullet:update(dt)
     self.ttl = self.ttl - dt
