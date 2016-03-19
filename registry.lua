@@ -29,6 +29,7 @@ function Registry:updateAll(dt)
     for k,v in pairs(self.items) do
         if v.destroyed then
             v:_destroy()
+            self.items[k] = nil
         else
             v:update(dt)
         end

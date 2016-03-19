@@ -27,8 +27,8 @@ local DAMAGE_COLOR = { r = 255, g = 255, b = 255 }
 local MAX_HEALTH   = 100
 local RECOVER_TIME = 3 -- in seconds
 
-function Player.new(world, x, y, name, color, keymap)
-    local player = Entity.new(Player, world, x, y, RADIUS, "dynamic")
+function Player.new(level, x, y, name, color, keymap)
+    local player = Entity.new(Player, level, x, y, RADIUS, "dynamic")
     player.fixture:setRestitution(0.7)
     player.body:setLinearDamping(DAMP)
 

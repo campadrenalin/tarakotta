@@ -4,8 +4,8 @@ Bullet.__index = Bullet
 Bullet.physics_category = 2
 Bullet.radius = 2
 
-function Bullet.new(world, x, y)
-    local bullet = Entity.new(Bullet, world, x, y, Bullet.radius, "dynamic")
+function Bullet.new(level, x, y)
+    local bullet = Entity.new(Bullet, level, x, y, Bullet.radius, "dynamic")
     bullet.fixture:setMask(1)
     bullet.body:setBullet(true)
 

@@ -13,9 +13,9 @@ local COOLDOWN = 0.05
 local MAX_AMMO = 50
 local DEBUG = false
 
-function Tower.new(world, x, y)
-    local tower  = Entity.new(Tower, world, x, y, RADIUS, "static")
-    tower.sensor = Sensor.new(world, x, y, tower)
+function Tower.new(level, x, y)
+    local tower  = Entity.new(Tower, level, x, y, RADIUS, "static")
+    tower.sensor = Sensor.new(level, x, y, tower)
     tower.fixture:setMask(2)
 
     tower.ammo   = 0
@@ -80,7 +80,7 @@ function Tower:fireBullet(target)
 
     local b  = self.body
     local bt = target.body
-    local bullet = Bullet.new(self.world, b:getX(), b:getY())
+    local bullet = Bullet.new(self.level, b:getX(), b:getY())
     local angle  = math.angle(b:getX(), b:getY(), bt:getX(), bt:getY())
     local speed = 7
     bullet.body:applyLinearImpulse(
