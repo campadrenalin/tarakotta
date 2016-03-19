@@ -11,10 +11,12 @@ function Level.new(path)
     level.world = love.physics.newWorld(0,0,true)
     level.registry = Registry.new()
     level.name = path
+    level.title = path
 
     setupPhysicsCallbacks(level.world)
-
     callback(level)
+
+    love.window.setTitle('Tarakotta - ' .. level.title)
     return level
 end
 
