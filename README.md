@@ -14,6 +14,17 @@ As you might expect, in order to succeed, you have to find a balance between mai
 
 This game is a very early, very rough work in progress. Even the basic mechanics are under construction.
 
+Running the game
+================
+
+It's still too early to bother packaging this game in any way, even via a makefile that users run themselves. This game is written in Love2D. For general instructions, [follow the official Love2D wiki](https://love2d.org/wiki/Getting_Started), but on UNIX-y systems this is as simple as:
+
+    # install love2d, for example on Debian:
+    sudo apt-get install love
+
+    # From within this repository:
+    love .
+
 TODO
 ====
 
