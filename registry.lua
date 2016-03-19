@@ -2,36 +2,35 @@ local Registry = {}
 Registry.__index = Registry
 
 function Registry.new()
-    return setmetatable({ nextID = 1 }, Registry)
+    return setmetatable({
+        nextID = 1,
+        items  = {}
+    }, Registry)
 end
 
 function Registry:add(object)
-    local id = self.nextID
+    local id = object.id or self.nextID
     object.id = id
-    self[id] = object
+    self.items[id] = object
     self.nextID = id + 1
 end
 
 function Registry:remove(object)
-    self[object.id] = nil
+    self.items[object.id] = nil
 end
 
 function Registry:drawAll()
-    for k,v in pairs(self) do
-        if k ~= "nextID" then
-            v:draw()
-        end
+    for k,v in pairs(self.items) do
+        v:draw()
     end
 end
 
 function Registry:updateAll(dt)
-    for k,v in pairs(self) do
-        if k ~= "nextID" then
-            if v.destroyed then
-                v:_destroy()
-            else
-                v:update(dt)
-            end
+    for k,v in pairs(self.items) do
+        if v.destroyed then
+            v:_destroy()
+        else
+            v:update(dt)
         end
     end
 end

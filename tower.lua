@@ -11,6 +11,7 @@ local RADIUS = 8
 local SENSOR_RADIUS = 128
 local COOLDOWN = 0.05
 local MAX_AMMO = 50
+local DEBUG = false
 
 function Tower.new(world, x, y)
     local tower  = Entity.new(Tower, world, x, y, RADIUS, "static")
@@ -28,6 +29,7 @@ function Tower:setOwner(owner)
     self.owner = owner
     self.color = owner.color
     self.ammo  = MAX_AMMO
+    self.sensor:reconsiderTarget()
 end
 
 function Tower:draw()
@@ -36,6 +38,21 @@ function Tower:draw()
         local fill_radius = math.lerp(Bullet.radius, RADIUS, self.ammo/MAX_AMMO)
         self:drawCircle(fill_radius, 20, nil, "fill")
     end
+
+    -- DEBUG OUTPUT
+    if DEBUG then
+        for k, v in pairs(self.sensor.targets_in_range.items) do
+            love.graphics.line(self.body:getX(), self.body:getY(), v.body:getX(), v.body:getY())
+            if self.target and v.name == self.target.name then
+                love.graphics.circle("fill",
+                    math.lerp(self.body:getX(), v.body:getX(), 0.2),
+                    math.lerp(self.body:getY(), v.body:getY(), 0.2),
+                    3, 10)
+            end
+        end
+        love.graphics.print(self.cooldown, self.body:getX() + RADIUS*2, self.body:getY())
+    end
+
 end
 
 function Tower:beginContact(other, collision, alreadyBounced)
@@ -51,14 +68,16 @@ function Tower:update(dt)
     if self.target == nil then return end
 
     self.cooldown = self.cooldown - dt
-    if self.cooldown < 0 and self.ammo > 0 then
-        self.cooldown = COOLDOWN - self.cooldown
-        self.ammo = self.ammo - 1
+    if self.cooldown < 0 then
         self:fireBullet(self.target)
     end
 end
 
 function Tower:fireBullet(target)
+    self.cooldown = COOLDOWN - self.cooldown
+    if self.ammo < 1 then return end
+    self.ammo = self.ammo - 1
+
     local b  = self.body
     local bt = target.body
     local bullet = Bullet.new(self.world, b:getX(), b:getY())
