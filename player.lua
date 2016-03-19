@@ -27,12 +27,10 @@ local DAMAGE_COLOR = { r = 255, g = 255, b = 255 }
 local MAX_HEALTH   = 100
 local RECOVER_TIME = 3 -- in seconds
 
--- TODO: Limited HP
 function Player.new(world, x, y, name, color, keymap)
     local player = Entity.new(Player, world, x, y, RADIUS, "dynamic")
     player.fixture:setRestitution(0.7)
     player.body:setLinearDamping(DAMP)
-    player.respawn_coordinates = { x = x, y = y }
 
     player.hp     = MAX_HEALTH
     player.name   = name
@@ -65,7 +63,7 @@ function Player:beginContact(other, collision, alreadyBounced)
         local speed = math.dist(0,0,vx,vy)
         self.hp = self.hp - speed/20
         if self.hp < 0 then
-            self:die()
+            self:destroy()
         end
 
         other:destroy()
@@ -74,12 +72,6 @@ function Player:beginContact(other, collision, alreadyBounced)
     if not alreadyBounced then
         return other:beginContact(self, collision, true)
     end
-end
-function Player:die()
-    local coords = self.respawn_coordinates
-    self.hp = 0
-    self.body:setLinearVelocity(0,0)
-    -- self.body:setPosition(coords.x, coords.y)
 end
 
 function Player:readKeys(map)
