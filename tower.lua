@@ -55,12 +55,9 @@ function Tower:draw()
 
 end
 
-function Tower:beginContact(other, collision, alreadyBounced)
+function Tower:beginContact(other, collision)
     if other.physics_category == 3 then
         self:setOwner(other)
-    end
-    if not alreadyBounced then
-        return other:beginContact(self, collision, true)
     end
 end
 

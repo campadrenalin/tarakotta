@@ -8,13 +8,19 @@ end
 
 -- Called when two fixtures begin to overlap.
 function beginContact(a,b,col)
-    getEntity(a):beginContact(getEntity(b), col, false)
+    local a = getEntity(a)
+    local b = getEntity(b)
+    a:beginContact(b, col)
+    b:beginContact(a, col)
 end
 
 -- Called when two fixtures cease to overlap.
 -- This will also be called outside of a world update, when colliding objects are destroyed.
 function endContact(a,b,col)
-    getEntity(a):endContact(getEntity(b), col, false)
+    local a = getEntity(a)
+    local b = getEntity(b)
+    a:endContact(b, col)
+    b:endContact(a, col)
 end
 
 -- Gets called before a collision gets resolved.

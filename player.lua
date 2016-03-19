@@ -57,7 +57,7 @@ function Player:update(dt)
         self.hp = MAX_HEALTH
     end
 end
-function Player:beginContact(other, collision, alreadyBounced)
+function Player:beginContact(other, collision)
     if other.physics_category == 2 then -- bullet
         local vx, vy = other.body:getLinearVelocity()
         local speed = math.dist(0,0,vx,vy)
@@ -68,9 +68,6 @@ function Player:beginContact(other, collision, alreadyBounced)
 
         other:destroy()
         return
-    end
-    if not alreadyBounced then
-        return other:beginContact(self, collision, true)
     end
 end
 

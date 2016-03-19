@@ -41,13 +41,7 @@ function Entity:_destroy()
     self.body:destroy()
 end
 
-function Entity:beginContact(other, collision, alreadyBounced)
-    if alreadyBounced then return end
-    other:beginContact(self, collision, true)
-end
-function Entity:endContact(other, collision, alreadyBounced)
-    if alreadyBounced then return end
-    other:endContact(self, collision, true)
-end
+function Entity:beginContact(other, collision) end
+function Entity:endContact(other, collision) end
 
 return Entity

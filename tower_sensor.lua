@@ -28,22 +28,16 @@ function Sensor:reconsiderTarget()
     self.tower.target = nil
 end
 
-function Sensor:beginContact(other, collision, alreadyBounced)
+function Sensor:beginContact(other, collision)
     if other.physics_category == 3 then
         self.targets_in_range:add(other)
         self:reconsiderTarget()
     end
-    if not alreadyBounced then
-        return other:beginContact(self, collision, true)
-    end
 end
-function Sensor:endContact(other, collision, alreadyBounced)
+function Sensor:endContact(other, collision)
     if other.physics_category == 3 then
         self.targets_in_range:remove(other)
         self:reconsiderTarget()
-    end
-    if not alreadyBounced then
-        return other:endContact(self, collision, true)
     end
 end
 
