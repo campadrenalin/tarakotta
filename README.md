@@ -31,7 +31,6 @@ TODO
  * Tower: Attack enemy towers
  * Spawn: Respawn in an area, rather than a single point
  * Spawn: Respawn animation that delays your ability to get back into the fight, but only slightly
- * Main: Arrange default map by hexagon pattern
  * Support multiple game modes and maps
  * Scoring
  * Modes: Soccer

@@ -1,7 +1,7 @@
 local Level = require "level"
 
 function love.load()
-    Level.switchTo("demo")
+    Level.switchTo("honeycomb")
 end
 
 function love.draw()
