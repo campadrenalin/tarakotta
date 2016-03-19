@@ -12,7 +12,6 @@ local SENSOR_RADIUS = 128
 local COOLDOWN = 0.05
 local MAX_AMMO = 50
 
--- TODO: Track multiple ongoing encroachments
 function Tower.new(world, x, y)
     local tower  = Entity.new(Tower, world, x, y, RADIUS, "static")
     tower.sensor = Sensor.new(world, x, y, tower)
