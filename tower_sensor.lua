@@ -19,7 +19,7 @@ end
 
 function Sensor:reconsiderTarget()
     local owner = self.tower.owner
-    for k, v in pairs(self.targets_in_range.items) do
+    for k, v in self.targets_in_range:iter() do
         if owner == nil or v.name ~= owner.name then
             self.tower.target = v
             return

@@ -41,7 +41,7 @@ function Tower:draw()
 
     -- DEBUG OUTPUT
     if DEBUG then
-        for k, v in pairs(self.sensor.targets_in_range.items) do
+        for k, v in self.sensor.targets_in_range:iter() do
             love.graphics.line(self.body:getX(), self.body:getY(), v.body:getX(), v.body:getY())
             if self.target and v.name == self.target.name then
                 love.graphics.circle("fill",

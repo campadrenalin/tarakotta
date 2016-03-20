@@ -19,14 +19,28 @@ function Registry:remove(object)
     self.items[object.id] = nil
 end
 
+function Registry:iter()
+    local i = 0
+    local n = self.nextID - 1
+    return function()
+        while i <= n do
+            i = i + 1
+            local item = self.items[i]
+            if item ~= nil then
+                return i, item
+            end
+        end
+    end
+end
+
 function Registry:drawAll()
-    for k,v in pairs(self.items) do
+    for k,v in self:iter() do
         v:draw()
     end
 end
 
 function Registry:updateAll(dt)
-    for k,v in pairs(self.items) do
+    for k,v in self:iter() do
         if v.destroyed then
             v:_destroy()
             self.items[k] = nil
