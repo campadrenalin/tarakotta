@@ -2,17 +2,17 @@ local Entity = {}
 Entity.__index = Entity
 Entity.color = { r = 255, g = 255, b = 255 }
 
-function Entity.new(class, level, x, y, radius, phystype)
+function Entity.new(class, level, x, y)
     local entity = setmetatable({}, class)
     entity.class   = class
-    entity.body    = love.physics.newBody(level.world, x, y, phystype)
-    entity.shape   = love.physics.newCircleShape(radius);
+    entity.body    = love.physics.newBody(level.world, x, y, entity.physics.type)
+    entity.shape   = entity:buildShape()
     entity.fixture = love.physics.newFixture(entity.body, entity.shape)
     entity.level   = level
     entity.destroyed = false
 
     -- Configure basic physics
-    entity.fixture:setCategory(entity.physics_category)
+    entity.fixture:setCategory(entity.physics.category)
 
     -- Register for draw/updates
     level.registry:add(entity)
@@ -21,6 +21,10 @@ function Entity.new(class, level, x, y, radius, phystype)
     entity.body:setUserData(entity)
 
     return entity
+end
+
+function Entity:buildShape()
+    return love.physics.newCircleShape(self.physics.radius)
 end
 
 -- Individual methods

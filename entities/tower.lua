@@ -1,20 +1,22 @@
 local Entity = require "entities/entity"
 local Tower  = setmetatable({}, Entity);
 Tower.__index = Tower
-Tower.physics_category = 1
+Tower.physics = {
+    type = 'static',
+    category = 1,
+    radius = 8,
+}
 
 local Bullet = require "entities/bullet"
 local Sensor = require "entities/tower_sensor"
 require "util/extra_math"
 
-local RADIUS = 8
-local SENSOR_RADIUS = 128
 local COOLDOWN = 0.05
 local MAX_AMMO = 50
 local DEBUG = false
 
 function Tower.new(level, x, y)
-    local tower  = Entity.new(Tower, level, x, y, RADIUS, "static")
+    local tower  = Entity.new(Tower, level, x, y)
     tower.sensor = Sensor.new(level, x, y, tower)
     tower.fixture:setMask(2)
 
@@ -33,9 +35,9 @@ function Tower:setOwner(owner)
 end
 
 function Tower:draw()
-    self:drawCircle(RADIUS, 20, nil)
+    self:drawCircle(self.physics.radius, 20, nil)
     if self.ammo > 0 then
-        local fill_radius = math.lerp(Bullet.radius, RADIUS, self.ammo/MAX_AMMO)
+        local fill_radius = math.lerp(Bullet.physics.radius, self.physics.radius, self.ammo/MAX_AMMO)
         self:drawCircle(fill_radius, 20, nil, "fill")
     end
 
@@ -50,13 +52,13 @@ function Tower:draw()
                     3, 10)
             end
         end
-        love.graphics.print(self.cooldown, self.body:getX() + RADIUS*2, self.body:getY())
+        love.graphics.print(self.cooldown, self.body:getX() + self.physics.radius*2, self.body:getY())
     end
 
 end
 
 function Tower:beginContact(other, collision)
-    if other.physics_category == 3 then
+    if other.physics.category == 3 then
         self:setOwner(other)
     end
 end

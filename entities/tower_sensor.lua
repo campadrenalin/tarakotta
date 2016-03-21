@@ -1,14 +1,16 @@
 local Entity = require "entities/entity"
 local Sensor  = setmetatable({}, Entity);
 Sensor.__index = Sensor
-Sensor.physics_category = 4
+Sensor.physics = {
+    type = 'static',
+    category = 4,
+    radius = 128,
+}
 
 local Registry = require "util/registry"
 
-local RADIUS = 128
-
 function Sensor.new(world, x, y, tower)
-    local sensor = Entity.new(Sensor, world, x, y, RADIUS, "static")
+    local sensor = Entity.new(Sensor, world, x, y)
     sensor.fixture:setMask(2)
     sensor.fixture:setSensor(true)
 
@@ -29,13 +31,13 @@ function Sensor:reconsiderTarget()
 end
 
 function Sensor:beginContact(other, collision)
-    if other.physics_category == 3 then
+    if other.physics.category == 3 then
         self.targets_in_range:add(other)
         self:reconsiderTarget()
     end
 end
 function Sensor:endContact(other, collision)
-    if other.physics_category == 3 then
+    if other.physics.category == 3 then
         self.targets_in_range:remove(other)
         self:reconsiderTarget()
     end

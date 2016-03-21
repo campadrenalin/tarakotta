@@ -15,11 +15,14 @@ Player.keymaps = {
         d = "right",
     },
 }
-Player.physics_category = 3
+Player.physics = {
+    type = 'dynamic',
+    category = 3,
+    radius = 4,
+}
 
 require "util/extra_math"
 
-local RADIUS = 4
 local FORCE  = 80
 local DAMP   = 2.3
 local SMOOTH = 10
@@ -28,7 +31,7 @@ local MAX_HEALTH   = 100
 local RECOVER_TIME = 3 -- in seconds
 
 function Player.new(level, x, y, name, color, keymap)
-    local player = Entity.new(Player, level, x, y, RADIUS, "dynamic")
+    local player = Entity.new(Player, level, x, y)
     player.fixture:setRestitution(0.7)
     player.body:setLinearDamping(DAMP)
 
@@ -40,10 +43,10 @@ function Player.new(level, x, y, name, color, keymap)
 end
 
 function Player:draw()
-    self:drawCircle(RADIUS, 20)
+    self:drawCircle(self.physics.radius, 20)
 
     if self.hp < MAX_HEALTH then
-        local fill_radius = math.lerp(RADIUS, 0, self.hp/MAX_HEALTH)
+        local fill_radius = math.lerp(self.physics.radius, 0, self.hp/MAX_HEALTH)
         self:drawCircle(fill_radius, 20, DAMAGE_COLOR, "fill")
     end
 end
@@ -58,7 +61,7 @@ function Player:update(dt)
     end
 end
 function Player:beginContact(other, collision)
-    if other.physics_category == 2 then -- bullet
+    if other.physics.category == 2 then -- bullet
         local vx, vy = other.body:getLinearVelocity()
         local speed = math.dist(0,0,vx,vy)
         self.hp = self.hp - speed/20
