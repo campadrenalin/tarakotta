@@ -28,7 +28,6 @@ It's still too early to bother packaging this game in any way, even via a makefi
 TODO
 ====
 
- * Tower: Attack enemy towers
  * Scoring
  * Wall: wrap type
  * Spawn: Respawn in an area, rather than a single point
