@@ -28,12 +28,11 @@ It's still too early to bother packaging this game in any way, even via a makefi
 TODO
 ====
 
- * Enforce world boundaries
  * Tower: Attack enemy towers
+ * Scoring
+ * Wall: wrap type
  * Spawn: Respawn in an area, rather than a single point
  * Spawn: Respawn animation that delays your ability to get back into the fight, but only slightly
  * Support multiple game modes and maps
- * Scoring
  * Modes: Soccer
- * Modes: Wrap
  * Modes: Campaign

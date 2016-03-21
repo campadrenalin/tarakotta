@@ -4,6 +4,8 @@ local blue = { r =  20, g = 50, b = 255 }
 local red  = { r = 255, g = 50, b =  20 }
 
 function setup(level)
+    level:boundaries("murder")
+
     level:add('spawn', 200, 100, {
         name  = "1UP",
         color = blue,
