@@ -1,9 +1,9 @@
-local Entity = require "entity"
+local Entity = require "entities/entity"
 local Sensor  = setmetatable({}, Entity);
 Sensor.__index = Sensor
 Sensor.physics_category = 4
 
-local Registry = require "registry"
+local Registry = require "util/registry"
 
 local RADIUS = 128
 

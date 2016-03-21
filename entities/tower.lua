@@ -1,11 +1,11 @@
-local Entity = require "entity"
+local Entity = require "entities/entity"
 local Tower  = setmetatable({}, Entity);
 Tower.__index = Tower
 Tower.physics_category = 1
 
-local Bullet = require "bullet"
-local Sensor = require "tower_sensor"
-require "extra_math"
+local Bullet = require "entities/bullet"
+local Sensor = require "entities/tower_sensor"
+require "util/extra_math"
 
 local RADIUS = 8
 local SENSOR_RADIUS = 128

@@ -1,4 +1,4 @@
-local Entity = require "entity"
+local Entity = require "entities/entity"
 local Bullet = setmetatable({}, Entity);
 Bullet.__index = Bullet
 Bullet.physics_category = 2

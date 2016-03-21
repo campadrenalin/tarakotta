@@ -1,8 +1,8 @@
 local Spawn = {}
 Spawn.__index = Spawn
 
-local Player   = require "player"
-local Registry = require "registry"
+local Player   = require "entities/player"
+local Registry = require "util/registry"
 
 function Spawn.new(level, x, y, spec)
     local spawn = setmetatable({}, Spawn)

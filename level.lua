@@ -2,8 +2,8 @@ local Level = {}
 Level.__index = Level
 Level.current = nil
 
-local Registry = require "registry"
-local setupPhysicsCallbacks = require "callbacks"
+local Registry = require "util/registry"
+local setupPhysicsCallbacks = require "util/callbacks"
 
 function Level.new(path)
     local callback = require("levels/" .. path)
@@ -33,7 +33,7 @@ end
 
 function Level:add(class, x, y, properties)
     if type(class) == "string" then
-        class = require(class)
+        class = require("entities/" .. class)
     end
     local entity = class.new(self, x, y, properties)
     self.registry:add(entity)

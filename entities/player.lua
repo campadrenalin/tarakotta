@@ -1,4 +1,4 @@
-local Entity = require "entity"
+local Entity = require "entities/entity"
 local Player = setmetatable({}, Entity);
 Player.__index = Player
 Player.keymaps = {
@@ -17,7 +17,7 @@ Player.keymaps = {
 }
 Player.physics_category = 3
 
-require "extra_math"
+require "util/extra_math"
 
 local RADIUS = 4
 local FORCE  = 80
