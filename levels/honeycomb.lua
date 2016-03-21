@@ -5,6 +5,8 @@ local red  = { r = 255, g = 50, b =  20 }
 
 function setup(level)
     level.title = 'Honeycomb!'
+    level:boundaries("solid")
+
     level:add('spawn', 200, 100, {
         name  = "1UP",
         color = blue,

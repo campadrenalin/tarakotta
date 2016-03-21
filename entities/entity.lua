@@ -2,8 +2,8 @@ local Entity = {}
 Entity.__index = Entity
 Entity.color = { r = 255, g = 255, b = 255 }
 
-function Entity.new(class, level, x, y)
-    local entity = setmetatable({}, class)
+function Entity.new(class, level, x, y, properties)
+    local entity = setmetatable(properties or {}, class)
     entity.class   = class
     entity.body    = love.physics.newBody(level.world, x, y, entity.physics.type)
     entity.shape   = entity:buildShape()

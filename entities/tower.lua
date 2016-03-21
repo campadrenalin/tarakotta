@@ -18,7 +18,7 @@ local DEBUG = false
 function Tower.new(level, x, y)
     local tower  = Entity.new(Tower, level, x, y)
     tower.sensor = Sensor.new(level, x, y, tower)
-    tower.fixture:setMask(2)
+    tower.fixture:setMask(2, 5)
 
     tower.ammo   = 0
     tower.owner  = nil

@@ -39,6 +39,19 @@ function Level:add(class, x, y, properties)
     self.registry:add(entity)
     return entity
 end
+function Level:boundaries(type)
+    local w = love.graphics.getWidth()
+    local h = love.graphics.getHeight()
+    local nw = { x = 0, y = 0 }
+    local sw = { x = 0, y = h }
+    local ne = { x = w, y = 0 }
+    local se = { x = w, y = h }
+
+    self:add("wall", nw, ne, type)
+    self:add("wall", ne, se, type)
+    self:add("wall", se, sw, type)
+    self:add("wall", sw, nw, type)
+end
 
 function Level:draw()
     self.registry:drawAll()
