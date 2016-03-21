@@ -10,7 +10,6 @@ Bullet.physics = {
 function Bullet.new(level, x, y)
     local bullet = Entity.new(Bullet, level, x, y)
     bullet.body:setBullet(true)
-    bullet.fixture:setMask(2)
 
     bullet.ttl = 0.5
     bullet.sent = false
