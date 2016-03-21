@@ -18,7 +18,7 @@ local DEBUG = false
 function Tower.new(level, x, y)
     local tower  = Entity.new(Tower, level, x, y)
     tower.sensor = Sensor.new(level, x, y, tower)
-    tower.fixture:setMask(2, 5)
+    tower.fixture:setMask(5)
 
     tower.ammo   = 0
     tower.owner  = nil
@@ -70,6 +70,8 @@ end
 function Tower:beginContact(other, collision)
     if other.physics.category == 3 then -- player
         self:setOwner(other)
+    elseif other.physics.category == 2 then -- bullet
+        collision:setEnabled(other.ttl < 1.9)
     end
 end
 
