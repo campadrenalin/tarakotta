@@ -9,8 +9,8 @@ Bullet.physics = {
 
 function Bullet.new(level, x, y)
     local bullet = Entity.new(Bullet, level, x, y)
-    bullet.fixture:setMask(1)
     bullet.body:setBullet(true)
+    bullet.fixture:setMask(2)
 
     bullet.ttl = 2
     return bullet

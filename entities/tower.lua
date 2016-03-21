@@ -28,10 +28,20 @@ function Tower.new(level, x, y)
 end
 
 function Tower:setOwner(owner)
-    self.owner = owner
-    self.color = owner.color
-    self.ammo  = MAX_AMMO
+    if owner then
+        self.owner = owner
+        self.color = owner.color
+        self.ammo  = MAX_AMMO
+    else
+        self.owner = nil
+        self.color = nil
+        self.ammo  = 0
+    end
     self.sensor:reconsiderTarget()
+end
+function Tower:team()
+    if self.owner == nil then return "neutral" end
+    return self.owner.name
 end
 
 function Tower:draw()
@@ -45,7 +55,7 @@ function Tower:draw()
     if DEBUG then
         for k, v in self.sensor.targets_in_range:iter() do
             love.graphics.line(self.body:getX(), self.body:getY(), v.body:getX(), v.body:getY())
-            if self.target and v.name == self.target.name then
+            if self.target and v.id == self.target.id then
                 love.graphics.circle("fill",
                     math.lerp(self.body:getX(), v.body:getX(), 0.2),
                     math.lerp(self.body:getY(), v.body:getY(), 0.2),
@@ -58,12 +68,15 @@ function Tower:draw()
 end
 
 function Tower:beginContact(other, collision)
-    if other.physics.category == 3 then
+    if other.physics.category == 3 then -- player
         self:setOwner(other)
     end
 end
 
 function Tower:update(dt)
+    if self.ammo <= 0 then
+        self:setOwner(nil)
+    end
     if self.target == nil then return end
 
     self.cooldown = self.cooldown - dt

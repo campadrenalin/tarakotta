@@ -42,6 +42,10 @@ function Player.new(level, x, y, name, color, keymap)
     return player
 end
 
+function Player:team()
+    return self.name
+end
+
 function Player:draw()
     self:drawCircle(self.physics.radius, 20)
 

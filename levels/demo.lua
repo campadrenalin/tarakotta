@@ -1,7 +1,7 @@
 local Player = require "entities/player"
 
-local blue = { r =  20, g = 50, b = 255 }
-local red  = { r = 255, g = 50, b =  20 }
+local blue = { r =  20, g = 50, b = 255, name = 'blue' }
+local red  = { r = 255, g = 50, b =  20, name = 'red'  }
 
 function setup(level)
     level:boundaries("murder")

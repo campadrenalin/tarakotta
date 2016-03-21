@@ -20,14 +20,17 @@ function Sensor.new(world, x, y, tower)
 end
 
 function Sensor:reconsiderTarget()
-    local owner = self.tower.owner
     for k, v in self.targets_in_range:iter() do
-        if owner == nil or v.name ~= owner.name then
+        if self:isEnemy(v) then
             self.tower.target = v
             return
         end
     end
     self.tower.target = nil
+end
+function Sensor:isEnemy(target)
+    if target:team() == 'neutral' then return false end
+    return self.tower:team() ~= target:team()
 end
 
 function Sensor:beginContact(other, collision)
