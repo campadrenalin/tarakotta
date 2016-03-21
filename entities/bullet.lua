@@ -12,7 +12,8 @@ function Bullet.new(level, x, y)
     bullet.body:setBullet(true)
     bullet.fixture:setMask(2)
 
-    bullet.ttl = 2
+    bullet.ttl = 0.5
+    bullet.sent = false
     return bullet
 end
 
@@ -24,6 +25,10 @@ function Bullet:update(dt)
     if self.ttl < 0 then
         self:destroy()
     end
+end
+
+function Bullet:endContact()
+    self.sent = true
 end
 
 return Bullet

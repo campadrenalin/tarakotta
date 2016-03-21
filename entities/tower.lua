@@ -71,7 +71,7 @@ function Tower:beginContact(other, collision)
     if other.physics.category == 3 then -- player
         self:setOwner(other)
     elseif other.physics.category == 2 then -- bullet
-        collision:setEnabled(other.ttl < 1.9)
+        collision:setEnabled(other.sent)
     end
 end
 
