@@ -1,6 +1,7 @@
 local Entity = require "entities/entity"
 local Bullet = setmetatable({}, Entity);
 Bullet.__index = Bullet
+Bullet.type = 'bullet'
 Bullet.physics = {
     type = 'dynamic',
     category = 2,

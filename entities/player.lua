@@ -1,6 +1,7 @@
 local Entity = require "entities/entity"
 local Player = setmetatable({}, Entity);
 Player.__index = Player
+Player.type = 'player'
 Player.keymaps = {
     arrows = {
         up    = "up",
@@ -29,6 +30,7 @@ local SMOOTH = 10
 local DAMAGE_COLOR = { r = 255, g = 255, b = 255 }
 local MAX_HEALTH   = 100
 local RECOVER_TIME = 3 -- in seconds
+local DEBUG = false
 
 function Player.new(level, x, y, properties)
     local player = Entity.new(Player, level, x, y, properties)
@@ -46,6 +48,10 @@ function Player:draw()
     if self.hp < MAX_HEALTH then
         local fill_radius = math.lerp(self.physics.radius, 0, self.hp/MAX_HEALTH)
         self:drawCircle(fill_radius, 20, DAMAGE_COLOR, "fill")
+    end
+
+    if DEBUG then
+        love.graphics.print(self.id, self.body:getX() + 20, self.body:getY())
     end
 end
 

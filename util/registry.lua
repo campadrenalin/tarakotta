@@ -10,9 +10,9 @@ end
 
 function Registry:add(object)
     local id = object.id or self.nextID
+    self.nextID = math.max(self.nextID, id) + 1
     object.id = id
     self.items[id] = object
-    self.nextID = id + 1
     return object
 end
 
