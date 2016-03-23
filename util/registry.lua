@@ -13,10 +13,12 @@ function Registry:add(object)
     object.id = id
     self.items[id] = object
     self.nextID = id + 1
+    return object
 end
 
 function Registry:remove(object)
     self.items[object.id] = nil
+    return object
 end
 
 function Registry:iter()

@@ -5,26 +5,37 @@ Entity.color = require('util/colors').white
 function Entity.new(class, level, x, y, properties)
     local entity = setmetatable(properties or {}, class)
     entity.class   = class
-    entity.body    = love.physics.newBody(level.world, x, y, entity.physics.type)
-    entity.shape   = entity:buildShape()
-    entity.fixture = love.physics.newFixture(entity.body, entity.shape)
     entity.level   = level
     entity.destroyed = false
-
-    -- Configure basic physics
-    entity.fixture:setCategory(entity.physics.category)
+    entity:buildPhysics(x, y)
 
     -- Register for draw/updates
     level.registry:add(entity)
-
-    -- Circular reference, be sure to explicitly delete
-    entity.body:setUserData(entity)
 
     return entity
 end
 
 function Entity:buildShape()
     return love.physics.newCircleShape(self.physics.radius)
+end
+function Entity:buildPhysics(x, y)
+    if self.physics == nil then
+        -- Simple object with no real physics enabled
+        self.x = x
+        self.y = y
+        return
+    end
+
+    -- Add physics-related properties to self
+    self.body    = love.physics.newBody(self.level.world, x, y, self.physics.type)
+    self.shape   = self:buildShape()
+    self.fixture = love.physics.newFixture(self.body, self.shape)
+
+    -- Make this entity type maskable and identifiable
+    self.fixture:setCategory(self.physics.category)
+
+    -- Circular reference, be sure to explicitly delete
+    self.body:setUserData(self)
 end
 
 function Entity:teamName()

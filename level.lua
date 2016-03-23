@@ -12,6 +12,7 @@ function Level.new(path)
     level.registry = Registry.new()
     level.name = path
     level.title = path
+    level.teams = Registry.new()
 
     setupPhysicsCallbacks(level.world)
     callback(level)
@@ -36,8 +37,7 @@ function Level:add(class, x, y, properties)
         class = require("entities/" .. class)
     end
     local entity = class.new(self, x, y, properties)
-    self.registry:add(entity)
-    return entity
+    return self.registry:add(entity)
 end
 function Level:boundaries(type)
     local w = love.graphics.getWidth()
@@ -53,10 +53,12 @@ function Level:boundaries(type)
     self:add("wall", sw, nw, type)
 end
 function Level:team(name, color)
-    local Team = require('entities/team')
-    local team = Team.new(self, name, color)
-    self.registry:add(team)
-    return team
+    return self.teams:add(
+        self:add("team", self.teams.nextID * 30, love.graphics.getHeight()-20, {
+            name  = name,
+            color = color,
+        })
+    )
 end
 
 function Level:draw()
