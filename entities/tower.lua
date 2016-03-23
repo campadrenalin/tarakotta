@@ -1,6 +1,7 @@
 local Entity = require "entities/entity"
 local Tower  = setmetatable({}, Entity);
 Tower.__index = Tower
+Tower.type = 'tower'
 Tower.physics = {
     type = 'static',
     category = 1,
@@ -88,14 +89,13 @@ function Tower:fireBullet(target)
 
     local b  = self.body
     local bt = target.body
-    local bullet = Bullet.new(self.level, b:getX(), b:getY())
+    local bullet = self:make(Bullet, b:getX(), b:getY(), { team = self.team })
     local angle  = math.angle(b:getX(), b:getY(), bt:getX(), bt:getY())
     local speed = 7
     bullet.body:applyLinearImpulse(
         speed * math.cos(angle),
         speed * math.sin(angle)
     )
-    bullet.team = self.team
 end
 
 return Tower

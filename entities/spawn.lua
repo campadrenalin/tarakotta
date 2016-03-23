@@ -1,4 +1,5 @@
-local Spawn = {}
+local Entity = require "entities/entity"
+local Spawn = setmetatable({}, Entity)
 Spawn.__index = Spawn
 
 local Player   = require "entities/player"
@@ -17,10 +18,7 @@ end
 function Spawn:respawn()
     local c = self.coordinates
     local s = self.spec
-    self.player = Player.new(
-        self.level,
-        c.x, c.y,
-        s.name, s.team, s.keymaps)
+    self.player = self:make(Player, c.x, c.y, s)
     self.player.spawn = self
 end
 

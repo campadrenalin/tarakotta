@@ -7,8 +7,8 @@ Bullet.physics = {
     radius = 2,
 }
 
-function Bullet.new(level, x, y)
-    local bullet = Entity.new(Bullet, level, x, y)
+function Bullet.new(level, x, y, properties)
+    local bullet = Entity.new(Bullet, level, x, y, properties)
     bullet.body:setBullet(true)
 
     bullet.ttl = 0.5

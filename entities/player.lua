@@ -30,15 +30,13 @@ local DAMAGE_COLOR = { r = 255, g = 255, b = 255 }
 local MAX_HEALTH   = 100
 local RECOVER_TIME = 3 -- in seconds
 
-function Player.new(level, x, y, name, team, keymap)
-    local player = Entity.new(Player, level, x, y)
+function Player.new(level, x, y, properties)
+    local player = Entity.new(Player, level, x, y, properties)
     player.fixture:setRestitution(0.7)
     player.body:setLinearDamping(DAMP)
 
-    player.hp     = MAX_HEALTH
-    player.name   = name or team.name
-    player.team   = team
-    player.keymap = keymap
+    player.hp   = MAX_HEALTH
+    player.name = player.name or player.team.name
     return player
 end
 
@@ -61,7 +59,7 @@ function Player:update(dt)
     end
 end
 function Player:beginContact(other, collision)
-    if other.physics.category == 2 then -- bullet
+    if other.physics.category == 2 and self:isEnemy(other) then -- bullet
         local vx, vy = other.body:getLinearVelocity()
         local speed = math.dist(0,0,vx,vy)
         self.hp = self.hp - speed/20

@@ -1,6 +1,8 @@
+local colors = require('util/colors')
 local Entity = {}
 Entity.__index = Entity
-Entity.color = require('util/colors').white
+Entity.color = colors.white
+Entity.type  = 'entity'
 
 function Entity.new(class, level, x, y, properties)
     local entity = setmetatable(properties or {}, class)
@@ -9,10 +11,10 @@ function Entity.new(class, level, x, y, properties)
     entity.destroyed = false
     entity:buildPhysics(x, y)
 
-    -- Register for draw/updates
-    level.registry:add(entity)
-
     return entity
+end
+function Entity:make(class, x, y, properties)
+    return self.level:add(class, x, y, properties)
 end
 
 function Entity:buildShape()
@@ -50,6 +52,11 @@ function Entity:isEnemy(other)
     local theirs = other:teamName()
     return mine and theirs and mine ~= theirs
 end
+function Entity:isFriendly(other)
+    local mine   = self:teamName()
+    local theirs = other:teamName()
+    return mine and theirs and mine == theirs
+end
 function Entity:getColor(c)
     local teamColor = self.team and self.team.color
     return c or teamColor or self.color
@@ -60,9 +67,8 @@ function Entity:draw() end
 function Entity:update() end
 
 function Entity:drawCircle(radius,quality, c, style)
-    c = self:getColor(c)
     style = style or "line"
-    love.graphics.setColor(c.r, c.g, c.b)
+    colors.drawIn(self:getColor(c))
     love.graphics.circle(style, self.body:getX(), self.body:getY(), radius, quality)
 end
 

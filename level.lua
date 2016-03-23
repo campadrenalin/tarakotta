@@ -36,8 +36,9 @@ function Level:add(class, x, y, properties)
     if type(class) == "string" then
         class = require("entities/" .. class)
     end
-    local entity = class.new(self, x, y, properties)
-    return self.registry:add(entity)
+    return self.registry:add(
+        class.new(self, x, y, properties)
+    )
 end
 function Level:boundaries(type)
     local w = love.graphics.getWidth()
@@ -53,8 +54,9 @@ function Level:boundaries(type)
     self:add("wall", sw, nw, type)
 end
 function Level:team(name, color)
+    local Team = require("entities/team")
     return self.teams:add(
-        self:add("team", self.teams.nextID * 30, love.graphics.getHeight()-20, {
+        Team.new(self, self.teams.nextID * 200 - 180, love.graphics.getHeight()-20, {
             name  = name,
             color = color,
         })
@@ -63,10 +65,12 @@ end
 
 function Level:draw()
     self.registry:drawAll()
+    self.teams:drawAll()
 end
 function Level:update(dt)
     self.world:update(dt)
     self.registry:updateAll(dt)
+    self.teams:updateAll(dt)
 end
 
 return Level
