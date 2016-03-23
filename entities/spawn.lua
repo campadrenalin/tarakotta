@@ -20,7 +20,7 @@ function Spawn:respawn()
     self.player = Player.new(
         self.level,
         c.x, c.y,
-        s.name, s.color, s.keymaps)
+        s.name, s.team, s.keymaps)
     self.player.spawn = self
 end
 

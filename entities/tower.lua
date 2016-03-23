@@ -21,27 +21,21 @@ function Tower.new(level, x, y)
     tower.fixture:setMask(5)
 
     tower.ammo   = 0
-    tower.owner  = nil
+    tower.team   = nil
     tower.target = nil
     tower.cooldown = COOLDOWN
     return tower
 end
 
-function Tower:setOwner(owner)
-    if owner then
-        self.owner = owner
-        self.color = owner.color
-        self.ammo  = MAX_AMMO
+function Tower:tag(team)
+    if team then
+        self.team = team
+        self.ammo = MAX_AMMO
     else
-        self.owner = nil
-        self.color = nil
-        self.ammo  = 0
+        self.team = nil
+        self.ammo = 0
     end
     self.sensor:reconsiderTarget()
-end
-function Tower:team()
-    if self.owner == nil then return "neutral" end
-    return self.owner.name
 end
 
 function Tower:draw()
@@ -69,7 +63,7 @@ end
 
 function Tower:beginContact(other, collision)
     if other.physics.category == 3 then -- player
-        self:setOwner(other)
+        self:tag(other.team)
     elseif other.physics.category == 2 then -- bullet
         collision:setEnabled(other.sent)
     end
@@ -77,7 +71,7 @@ end
 
 function Tower:update(dt)
     if self.ammo <= 0 then
-        self:setOwner(nil)
+        self:tag(nil)
     end
     if self.target == nil then return end
 
@@ -101,7 +95,7 @@ function Tower:fireBullet(target)
         speed * math.cos(angle),
         speed * math.sin(angle)
     )
-    bullet.color = self.color
+    bullet.team = self.team
 end
 
 return Tower

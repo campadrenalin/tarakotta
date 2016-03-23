@@ -28,9 +28,8 @@ function Sensor:reconsiderTarget()
     end
     self.tower.target = nil
 end
-function Sensor:isEnemy(target)
-    if target:team() == 'neutral' then return false end
-    return self.tower:team() ~= target:team()
+function Sensor:teamName()
+    return self.tower:teamName()
 end
 
 function Sensor:beginContact(other, collision)

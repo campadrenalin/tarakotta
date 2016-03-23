@@ -52,6 +52,12 @@ function Level:boundaries(type)
     self:add("wall", se, sw, type)
     self:add("wall", sw, nw, type)
 end
+function Level:team(name, color)
+    local Team = require('entities/team')
+    local team = Team.new(self, name, color)
+    self.registry:add(team)
+    return team
+end
 
 function Level:draw()
     self.registry:drawAll()

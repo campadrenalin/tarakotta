@@ -1,6 +1,6 @@
 local Entity = {}
 Entity.__index = Entity
-Entity.color = { r = 255, g = 255, b = 255, name = 'white' }
+Entity.color = { r = 255, g = 255, b = 255 }
 
 function Entity.new(class, level, x, y, properties)
     local entity = setmetatable(properties or {}, class)
@@ -27,12 +27,29 @@ function Entity:buildShape()
     return love.physics.newCircleShape(self.physics.radius)
 end
 
+function Entity:teamName()
+    if self.team then
+        return self.team.name
+    else
+        return nil
+    end
+end
+function Entity:isEnemy(other)
+    local mine   = self:teamName()
+    local theirs = other:teamName()
+    return mine and theirs and mine ~= theirs
+end
+function Entity:getColor(c)
+    local teamColor = self.team and self.team.color
+    return c or teamColor or self.color
+end
+
 -- Individual methods
 function Entity:draw() end
 function Entity:update() end
 
 function Entity:drawCircle(radius,quality, c, style)
-    c = c or self.color
+    c = self:getColor(c)
     style = style or "line"
     love.graphics.setColor(c.r, c.g, c.b)
     love.graphics.circle(style, self.body:getX(), self.body:getY(), radius, quality)
