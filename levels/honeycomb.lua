@@ -1,16 +1,14 @@
 local Player = require "entities/player"
-
-local blue = { r =  20, g = 50, b = 255 }
-local red  = { r = 255, g = 50, b =  20 }
+local colors = require 'util/colors'
 
 function setup(level)
     level.title = 'Honeycomb!'
     level:boundaries("solid")
 
-    level:team('1UP', blue):spawn(200, 100, {
+    level:team('1UP', colors.blue):spawn(200, 100, {
         keymaps = Player.keymaps.arrows,
     })
-    level:team('2UP', red):spawn(100, 200, {
+    level:team('2UP', colors.red):spawn(100, 200, {
         keymaps = Player.keymaps.wasd,
     })
     for row=1,10 do

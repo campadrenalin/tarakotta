@@ -1,6 +1,6 @@
 local Entity = {}
 Entity.__index = Entity
-Entity.color = { r = 255, g = 255, b = 255 }
+Entity.color = require('util/colors').white
 
 function Entity.new(class, level, x, y, properties)
     local entity = setmetatable(properties or {}, class)
