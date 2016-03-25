@@ -28,10 +28,10 @@ It's still too early to bother packaging this game in any way, even via a makefi
 TODO
 ====
 
- * Scoring
- * Wall: wrap type
- * Spawn: Respawn in an area, rather than a single point
+ * Bug: towers continue to fire at you, even if you die and respawn out of range
  * Spawn: Respawn animation that delays your ability to get back into the fight, but only slightly
- * Support multiple game modes and maps
+ * Spawn: Respawn in an area, rather than a single point
+ * Wall: wrap type
  * Modes: Soccer
  * Modes: Campaign
+ * Main menu
