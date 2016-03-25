@@ -30,7 +30,6 @@ local SMOOTH = 10
 local DAMAGE_COLOR = { r = 255, g = 255, b = 255 }
 local MAX_HEALTH   = 100
 local RECOVER_TIME = 3 -- in seconds
-local DEBUG = false
 
 function Player.new(level, x, y, properties)
     local player = Entity.new(Player, level, x, y, properties)
@@ -50,9 +49,10 @@ function Player:draw()
         self:drawCircle(fill_radius, 20, DAMAGE_COLOR, "fill")
     end
 
-    if DEBUG then
-        love.graphics.print(self.id, self.body:getX() + 20, self.body:getY())
-    end
+    -- self:drawDebug()
+end
+function Player:drawDebug()
+    love.graphics.print(self.id, self.body:getX() + 20, self.body:getY())
 end
 
 function Player:update(dt)

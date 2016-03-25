@@ -4,8 +4,18 @@ Entity.__index = Entity
 Entity.color = colors.white
 Entity.type  = 'entity'
 
+function shallow_clone(orig)
+    local clone = {}
+    if not orig then return clone end
+
+    for k, v in pairs(orig) do
+        clone[k] = v
+    end
+    return clone
+end
+
 function Entity.new(class, level, x, y, properties)
-    local entity = setmetatable(properties or {}, class)
+    local entity = setmetatable(shallow_clone(properties), class)
     entity.class   = class
     entity.level   = level
     entity.destroyed = false

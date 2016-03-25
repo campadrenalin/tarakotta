@@ -28,8 +28,6 @@ It's still too early to bother packaging this game in any way, even via a makefi
 TODO
 ====
 
- * Bug: towers continue to fire at you, even if you die and respawn out of range
- * Spawn: Respawn animation that delays your ability to get back into the fight, but only slightly
  * Spawn: Respawn in an area, rather than a single point
  * Wall: wrap type
  * Modes: Soccer
