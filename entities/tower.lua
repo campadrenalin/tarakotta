@@ -88,14 +88,11 @@ function Tower:fireBullet(target)
     self.ammo = self.ammo - 1
 
     local b  = self.body
-    local bt = target.body
-    local bullet = self:make(Bullet, b:getX(), b:getY(), { team = self.team })
-    local angle  = math.angle(b:getX(), b:getY(), bt:getX(), bt:getY())
-    local speed = 7
-    bullet.body:applyLinearImpulse(
-        speed * math.cos(angle),
-        speed * math.sin(angle)
-    )
+    local bullet = self:make(Bullet, b:getX(), b:getY(), {
+        team   = self.team,
+        target = self.target,
+        speed  = 7,
+    })
 end
 
 return Tower

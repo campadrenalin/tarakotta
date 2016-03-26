@@ -55,6 +55,13 @@ function Player:drawDebug()
     love.graphics.print(self.id, self.body:getX() + 20, self.body:getY())
 end
 
+function Player:_destroy()
+    for i=1,30 do
+        self:make('bullet', self.body:getX(), self.body:getY(), { team = self.team })
+    end
+    Entity._destroy(self)
+end
+
 function Player:update(dt)
     self:readKeys(self.keymap)
 

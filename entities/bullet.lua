@@ -14,6 +14,20 @@ function Bullet.new(level, x, y, properties)
 
     bullet.ttl = 0.5
     bullet.sent = false
+    bullet.speed = bullet.speed or math.random(3,9)
+
+    if bullet.target then
+        local b  = bullet.body
+        local bt = bullet.target.body
+        bullet.angle = math.angle(b:getX(), b:getY(), bt:getX(), bt:getY())
+    else
+        bullet.angle = math.random(0, 2*math.pi)
+    end
+    bullet.body:applyLinearImpulse(
+        bullet.speed * math.cos(bullet.angle),
+        bullet.speed * math.sin(bullet.angle)
+    )
+
     return bullet
 end
 
