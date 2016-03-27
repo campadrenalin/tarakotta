@@ -92,6 +92,7 @@ function Tower:fireBullet(target)
         team   = self.team,
         target = self.target,
         speed  = 7,
+        motionCompensation = 0.1 + math.sin(self.ammo/50)*0.1, -- sweep between 0 and .2 over time
     })
 end
 

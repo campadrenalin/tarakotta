@@ -19,7 +19,9 @@ function Bullet.new(level, x, y, properties)
     if bullet.target then
         local b  = bullet.body
         local bt = bullet.target.body
-        bullet.angle = math.angle(b:getX(), b:getY(), bt:getX(), bt:getY())
+        local mc = bullet.motionCompensation or 0
+        local vx, vy = bt:getLinearVelocity()
+        bullet.angle = math.angle(b:getX(), b:getY(), bt:getX() + mc*vx, bt:getY() + mc*vy)
     else
         bullet.angle = math.random(0, 2*math.pi)
     end
