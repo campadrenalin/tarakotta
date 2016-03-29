@@ -2,26 +2,13 @@ local Entity = require "entities/entity"
 local Player = setmetatable({}, Entity);
 Player.__index = Player
 Player.type = 'player'
-Player.keymaps = {
-    arrows = {
-        up    = "up",
-        down  = "down",
-        left  = "left",
-        right = "right",
-    },
-    wasd = {
-        w = "up",
-        s = "down",
-        a = "left",
-        d = "right",
-    },
-}
 Player.physics = {
     type = 'dynamic',
     category = 3,
     radius = 4,
 }
 
+local KeyboardInput = require "input/keyboard"
 require "util/extra_math"
 
 local FORCE  = 80
@@ -36,8 +23,9 @@ function Player.new(level, x, y, properties)
     player.fixture:setRestitution(0.7)
     player.body:setLinearDamping(DAMP)
 
-    player.hp   = MAX_HEALTH
-    player.name = player.name or player.team.name
+    player.hp    = MAX_HEALTH
+    player.name  = player.name  or player.team.name
+    player.input = player.input or KeyboardInput.new(player.keymap)
     return player
 end
 
@@ -63,14 +51,31 @@ function Player:_destroy()
 end
 
 function Player:update(dt)
-    self:readKeys(self.keymap)
+    self:inputMotion(dt)
+    self:heal(dt)
+end
 
-    -- Auto-healing
+function Player:inputMotion(dt)
+    local i = self.input
+    i:update(dt, self)
+    local fx = i:value("left", -FORCE,
+        i:value("right", FORCE, 0))
+    local fy = i:value("up", -FORCE,
+        i:value("down", FORCE, 0))
+    -- TODO: Compensate for "diagonal boost"
+
+    local vx, vy = self.body:getLinearVelocity()
+    self.body:applyForce(fx, fy) -- Raw force
+    self.body:applyForce((fx-vx)/SMOOTH, (fy-vy)/SMOOTH) -- For agility: (speed_wanted - speed_have)/SMOOTH
+end
+
+function Player:heal(dt)
     self.hp = self.hp + (dt * MAX_HEALTH / RECOVER_TIME)
     if self.hp > MAX_HEALTH then
         self.hp = MAX_HEALTH
     end
 end
+
 function Player:beginContact(other, collision)
     if other.physics.category == 2 and self:isEnemy(other) then -- bullet
         local vx, vy = other.body:getLinearVelocity()
@@ -82,30 +87,6 @@ function Player:beginContact(other, collision)
 
         other:destroy()
         return
-    end
-end
-
-function Player:readKeys(map)
-    for k, v in pairs(map) do
-        if love.keyboard.isDown(k) then
-            self:_keypress(v)
-        end
-    end
-end
-function Player:keyforce(x, y)
-    local vx, vy = self.body:getLinearVelocity()
-    self.body:applyForce(x, y) -- Raw force
-    self.body:applyForce((x-vx)/SMOOTH, (y-vy)/SMOOTH) -- For agility: (speed_wanted - speed_have)/SMOOTH
-end
-function Player:_keypress(key)
-    if key == "up" then
-        self:keyforce(0, -FORCE)
-    elseif key == "down" then
-        self:keyforce(0, FORCE)
-    elseif key == "left" then
-        self:keyforce(-FORCE, 0)
-    elseif key == "right" then
-        self:keyforce(FORCE,  0)
     end
 end
 

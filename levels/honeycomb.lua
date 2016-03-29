@@ -6,10 +6,10 @@ function setup(level)
     level:boundaries("solid")
 
     level:team('1UP', colors.blue):spawn(200, 100, {
-        keymap = Player.keymaps.arrows,
+        keymap = 'arrows',
     })
     level:team('2UP', colors.red):spawn(100, 200, {
-        keymap = Player.keymaps.wasd,
+        keymap = 'wasd',
     })
     for row=1,10 do
         local shift = (row % 2) * 64 - 128

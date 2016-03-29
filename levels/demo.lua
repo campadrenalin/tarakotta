@@ -5,10 +5,10 @@ function setup(level)
     level:boundaries("murder")
 
     level:team('1UP', colors.blue):spawn(200, 100, {
-        keymaps = Player.keymaps.arrows,
+        keymap = 'arrows',
     })
     level:team('2UP', colors.red):spawn(100, 200, {
-        keymaps = Player.keymaps.wasd,
+        keymap = 'wasd',
     })
     for i=1,20 do
         level:add('tower', i*32, i*32)
