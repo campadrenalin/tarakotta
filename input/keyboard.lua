@@ -1,4 +1,5 @@
-local KeyboardInput = {}
+local Input = require "input/base"
+local KeyboardInput = setmetatable({}, Input)
 KeyboardInput.__index = KeyboardInput
 KeyboardInput.mappings = {
     arrows = {
@@ -36,13 +37,6 @@ function KeyboardInput:update()
 end
 function KeyboardInput:isDown(symbolic)
     return self.down[symbolic] or false
-end
-function KeyboardInput:value(symbolic, ifyes, ifno)
-    if self.down[symbolic] then
-        return ifyes
-    else
-        return ifno
-    end
 end
 
 return KeyboardInput

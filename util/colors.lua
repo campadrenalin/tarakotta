@@ -1,8 +1,9 @@
 require "util/extra_math"
 
 local colors = {
-    blue  = { r =  20, g =  50, b = 255, a = 255 },
     red   = { r = 255, g =  50, b =  20, a = 255 },
+    green = { r =  35, g = 255, b =  20, a = 255 },
+    blue  = { r =  20, g =  50, b = 255, a = 255 },
     white = { r = 255, g = 255, b = 255, a = 255 },
     black = { r =   0, g =   0, b =   0, a = 255 },
 }

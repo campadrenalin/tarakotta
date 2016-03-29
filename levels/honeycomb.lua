@@ -1,5 +1,6 @@
 local Player = require "entities/player"
 local colors = require 'util/colors'
+local CpuInput = require "input/cpu"
 
 function setup(level)
     level.title = 'Honeycomb!'
@@ -10,6 +11,9 @@ function setup(level)
     })
     level:team('2UP', colors.red):spawn(100, 200, {
         keymap = 'wasd',
+    })
+    level:team('CPU1', colors.green):spawn(500, 300, {
+        input = CpuInput.new()
     })
     for row=1,10 do
         local shift = (row % 2) * 64 - 128
