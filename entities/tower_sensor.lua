@@ -1,6 +1,7 @@
 local Entity = require "entities/entity"
 local Sensor  = setmetatable({}, Entity);
 Sensor.__index = Sensor
+Sensor.type = 'tower_sensor'
 Sensor.physics = {
     type = 'static',
     category = 4,

@@ -72,6 +72,9 @@ function Entity:getColor(c)
     return c or teamColor or self.color
 end
 
+function Entity:getX() return self.body:getX() end
+function Entity:getY() return self.body:getY() end
+
 -- Individual methods
 function Entity:draw() end
 function Entity:update() end

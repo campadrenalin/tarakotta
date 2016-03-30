@@ -30,6 +30,7 @@ function Player.new(level, x, y, properties)
 end
 
 function Player:draw()
+    self.input:draw()
     self:drawCircle(self.physics.radius, 20)
 
     if self.hp < MAX_HEALTH then

@@ -1,6 +1,7 @@
 local Input = {}
 Input.__index = Input
 
+function Input:draw() end
 function Input:update(dt) end
 function Input:isDown() return false end
 

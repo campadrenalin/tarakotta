@@ -1,6 +1,7 @@
 local Entity = require "entities/entity"
 local Spawn = setmetatable({}, Entity)
 Spawn.__index = Spawn
+Spawn.type = 'spawn'
 Spawn.MAX_COOLDOWN = 0.4
 
 local Player   = require "entities/player"
