@@ -14,6 +14,10 @@ As you might expect, in order to succeed, you have to find a balance between mai
 
 This game is a very early, very rough work in progress. Even the basic mechanics are under construction.
 
+New
+===
+ * CPU1 player in green! Grabs territory urgently, but is a bit of a coward in the face of opposition.
+
 Running the game
 ================
 
