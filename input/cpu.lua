@@ -2,35 +2,11 @@ local Input = require "input/base"
 local CpuInput = setmetatable({}, Input)
 CpuInput.__index = CpuInput
 
--- Dimensions of "vision" bounding box, in offsets from player
-local WIDTH  = 25  -- Perpendicular to vision direction
-local HEIGHT = 100 -- Parallel to vision direction
-CpuInput.bounds = {
-    up = {
-        tlx = -WIDTH,
-        tly = -HEIGHT,
-        brx =  WIDTH,
-        bry =  0,
-    },
-    down = {
-        tlx = -WIDTH,
-        tly =  0,
-        brx =  WIDTH,
-        bry =  HEIGHT,
-    },
-    left = {
-        tlx = -HEIGHT,
-        tly = -WIDTH,
-        brx =  0,
-        bry =  WIDTH,
-    },
-    right = {
-        tlx =  0,
-        tly = -WIDTH,
-        brx =  HEIGHT,
-        bry =  WIDTH,
-    },
-}
+require "util/extra_math"
+local colors = require "util/colors"
+
+local THRESHOLD = 1
+local BOX_SIZE  = 150
 
 function CpuInput.new()
     return setmetatable({
@@ -38,69 +14,66 @@ function CpuInput.new()
         wants = {},
     }, CpuInput)
 end
-function CpuInput:getDirectionScore(name, owner)
-    local b = self.bounds[name]
-    if b == nil then
-        return false
+function CpuInput:draw()
+    local d = self.draws
+    colors.drawIn(colors.green)
+    love.graphics.rectangle("line", d.x - BOX_SIZE, d.y - BOX_SIZE, BOX_SIZE * 2, BOX_SIZE * 2)
+    for i, target in ipairs(d.targets) do
+        if not target.destroyed then
+            love.graphics.line(d.x, d.y, target.body:getX(), target.body:getY())
+            print(target.type)
+        end
     end
-    local x, y = owner.body:getPosition()
-    local score = 0
+    if d.targets.best then
+        local target = d.targets.best
+        colors.drawIn(colors.red)
+        love.graphics.line(d.x, d.y, target.body:getX(), target.body:getY())
+    end
+end
+function CpuInput:update(dt, owner)
+    local d = self.draws
+    d.targets = {}
+    d.x = owner:getX()
+    d.y = owner:getY()
+
+    local bestTarget = { -- single thing to go towards
+        target   = nil,
+        distance = 1000000,
+    }
+    local scurry = { x = math.random(-2,2), y = math.random(-2,2) } -- aggregate of "run away" velocity
     owner.level.world:queryBoundingBox(
-        x + b.tlx,
-        y + b.tly,
-        x + b.brx,
-        y + b.bry,
+        d.x - BOX_SIZE, d.y - BOX_SIZE, d.x + BOX_SIZE, d.y + BOX_SIZE,
         function(fixture)
             local target = fixture:getBody():getUserData()
-            if target.type == "tower" and target:teamName() == nil then
-                table.insert(self.draws.targets, target)
-                score = score + 1
+            if target.type ~= "tower"
+                or target:getX() > love.graphics.getWidth() - 20
+                or target:getY() > love.graphics.getHeight() - 20
+                    then return true end
+            table.insert(d.targets, target)
+            if target:teamName() == nil then
+                local dist = math.object_angle(owner, target)
+                if dist < bestTarget.distance then
+                    bestTarget.target = target
+                end
+            elseif owner:isEnemy(target) then
+                print(target.type)
+                scurry.x = scurry.x + (d.x - target:getX())/20
+                scurry.y = scurry.y + (d.y - target:getY())/20
             end
             return true
         end
     )
-    return score
-end
-function CpuInput:draw()
-    local d = self.draws
-    for i, target in ipairs(d.targets) do
-        love.graphics.line(d.x, d.y, target.body:getX(), target.body:getY())
-        print(i)
-    end
-    if self.scores then
-        love.graphics.line(d.x, d.y, d.x, d.y + self.scores.up   * 10)
-        love.graphics.line(d.x, d.y, d.x, d.y - self.scores.down * 10)
-        love.graphics.line(d.x, d.y, d.x - self.scores.left  * 10, d.y)
-        love.graphics.line(d.x, d.y, d.x + self.scores.right * 10, d.y)
-    end
-end
-function CpuInput:update(dt, owner)
-    self.draws.targets = {}
-    self.draws.x = owner.body:getX()
-    self.draws.y = owner.body:getY()
-
-    local scores = {}
-    for name, bounds in pairs(self.bounds) do
-        scores[name] = self:getDirectionScore(name, owner)
+    if bestTarget.target ~= nil then
+        d.targets.best = bestTarget.target
+        local tx, ty = math.vector_xy(math.object_angle(owner, bestTarget.target), 10)
+        scurry.x = scurry.x + tx
+        scurry.y = scurry.y + ty
     end
 
-    if scores.up > scores.down then
-        self.wants.up = true
-        self.wants.down = false
-    else
-        self.wants.up = false
-        self.wants.down = true
-    end
-
-    if scores.left > scores.right then
-        self.wants.left = true
-        self.wants.right = false
-    else
-        self.wants.left = false
-        self.wants.right = true
-    end
-
-    self.scores = scores
+    self.wants.left  = -scurry.x > THRESHOLD
+    self.wants.right =  scurry.x > THRESHOLD
+    self.wants.up    = -scurry.y > THRESHOLD
+    self.wants.down  =  scurry.y > THRESHOLD
 end
 function CpuInput:isDown(symbolic)
     return self.wants[symbolic] or false
