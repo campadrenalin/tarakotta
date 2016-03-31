@@ -15,13 +15,15 @@ function CpuInput.new()
     }, CpuInput)
 end
 function CpuInput:draw()
+    -- self:debugDraw()
+end
+function CpuInput:debugDraw()
     local d = self.draws
     colors.drawIn(colors.green)
     love.graphics.rectangle("line", d.x - BOX_SIZE, d.y - BOX_SIZE, BOX_SIZE * 2, BOX_SIZE * 2)
     for i, target in ipairs(d.targets) do
         if not target.destroyed then
             love.graphics.line(d.x, d.y, target.body:getX(), target.body:getY())
-            print(target.type)
         end
     end
     if d.targets.best then
@@ -56,7 +58,6 @@ function CpuInput:update(dt, owner)
                     bestTarget.target = target
                 end
             elseif owner:isEnemy(target) then
-                print(target.type)
                 scurry.x = scurry.x + (d.x - target:getX())/20
                 scurry.y = scurry.y + (d.y - target:getY())/20
             end
