@@ -53,13 +53,14 @@ function CpuInput:update(dt, owner)
                     then return true end
             table.insert(d.targets, target)
             if target:teamName() == nil then
-                local dist = math.object_angle(owner, target)
+                local dist = math.object_angle(owner, target) + math.random(0, 100)
                 if dist < bestTarget.distance then
                     bestTarget.target = target
                 end
             elseif owner:isEnemy(target) then
-                scurry.x = scurry.x + (d.x - target:getX())/20
-                scurry.y = scurry.y + (d.y - target:getY())/20
+                local dampen = 40 + math.random(0, 60)
+                scurry.x = scurry.x + (d.x - target:getX())/dampen
+                scurry.y = scurry.y + (d.y - target:getY())/dampen
             end
             return true
         end
