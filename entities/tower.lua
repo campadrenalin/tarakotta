@@ -74,24 +74,27 @@ function Tower:update(dt)
     if self.ammo <= 0 then
         self:tag(nil)
     end
+    if math.random(0, MAX_AMMO*1200*dt) < self.ammo then self:fireBullet() end
     if self.target == nil then return end
 
     self.cooldown = self.cooldown - dt
     if self.cooldown < 0 then
-        self:fireBullet(self.target)
+        self:fireBullet()
     end
 end
 
-function Tower:fireBullet(target)
+function Tower:fireBullet()
     self.cooldown = COOLDOWN - self.cooldown
     if self.ammo < 1 then return end
     self.ammo = self.ammo - 1
 
-    local b  = self.body
+    local b = self.body
+    local speed = 7
+    if not self.target then speed = math.random(1,2) end
     local bullet = self:make(Bullet, b:getX(), b:getY(), {
         team   = self.team,
         target = self.target,
-        speed  = 7,
+        speed  = speed,
         motionCompensation = 0.1 + math.sin(self.ammo/50)*0.1, -- sweep between 0 and .2 over time
     })
 end
