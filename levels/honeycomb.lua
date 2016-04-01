@@ -6,14 +6,14 @@ function setup(level)
     level.title = 'Honeycomb!'
     level:boundaries("solid")
 
-    level:team('1UP', colors.blue):spawn(200, 100, {
+    level:team('1UP', colors.blue):spawn(200, 500, {
         keymap = 'arrows',
     })
-    level:team('2UP', colors.red):spawn(100, 200, {
+    level:team('CPU1', colors.red):spawn(100, 200, {
         -- keymap = 'wasd',
         input = CpuInput.new()
     })
-    level:team('CPU1', colors.green):spawn(500, 300, {
+    level:team('CPU2', colors.green):spawn(500, 300, {
         input = CpuInput.new()
     })
     for row=1,10 do
