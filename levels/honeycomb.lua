@@ -10,7 +10,8 @@ function setup(level)
         keymap = 'arrows',
     })
     level:team('2UP', colors.red):spawn(100, 200, {
-        keymap = 'wasd',
+        -- keymap = 'wasd',
+        input = CpuInput.new()
     })
     level:team('CPU1', colors.green):spawn(500, 300, {
         input = CpuInput.new()
