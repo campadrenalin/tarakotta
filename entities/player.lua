@@ -37,11 +37,6 @@ function Player:draw()
         local fill_radius = math.lerp(self.physics.radius, 0, self.hp/MAX_HEALTH)
         self:drawCircle(fill_radius, 20, DAMAGE_COLOR, "fill")
     end
-
-    -- self:drawDebug()
-end
-function Player:drawDebug()
-    love.graphics.print(self.id, self.body:getX() + 20, self.body:getY())
 end
 
 function Player:_destroy()

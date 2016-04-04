@@ -41,7 +41,7 @@ function Team:update(dt)
 
     self.countdown = self.countdown + self.SCORE_INTERVAL
     local delta = 0
-    for k, v in self.level.registry:iter() do
+    for k, v in ipairs(self.level.registry.items) do
         if v.type == 'tower' and self:isFriendly(v) then
             delta = delta + 1
         end

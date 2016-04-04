@@ -16,12 +16,12 @@ function Sensor.new(world, x, y, tower)
     sensor.fixture:setSensor(true)
 
     sensor.tower = tower
-    sensor.targets_in_range = Registry.new()
+    sensor.targets_in_range = {}
     return sensor
 end
 
 function Sensor:reconsiderTarget()
-    for k, v in self.targets_in_range:iter() do
+    for k, v in pairs(self.targets_in_range) do
         if self:isEnemy(v) then
             self.tower.target = v
             return
@@ -35,13 +35,13 @@ end
 
 function Sensor:beginContact(other, collision)
     if other.physics.category == 3 then
-        self.targets_in_range:add(other)
+        self.targets_in_range[other.uniq_id] = other
         self:reconsiderTarget()
     end
 end
 function Sensor:endContact(other, collision)
     if other.physics.category == 3 then
-        self.targets_in_range:remove(other)
+        self.targets_in_range[other.uniq_id] = nil
         self:reconsiderTarget()
     end
 end

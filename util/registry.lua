@@ -3,49 +3,42 @@ Registry.__index = Registry
 
 function Registry.new()
     return setmetatable({
-        nextID = 1,
-        items  = {}
+        nextUnique = 1,
+        size   = 0,
+        items  = {},
     }, Registry)
 end
 
 function Registry:add(object)
-    local id = object.id or self.nextID
-    self.nextID = math.max(self.nextID, id) + 1
-    object.id = id
-    self.items[id] = object
+    -- Helper for comparison outside the registry
+    object.uniq_id = object.uniq_id or self.nextUnique
+
+    local s = self.size + 1
+    self.size = s
+    self.items[s] = object
     return object
 end
-
-function Registry:remove(object)
-    self.items[object.id] = nil
-    return object
-end
-
-function Registry:iter()
-    local i = 0
-    local n = self.nextID - 1
-    return function()
-        while i <= n do
-            i = i + 1
-            local item = self.items[i]
-            if item ~= nil then
-                return i, item
-            end
-        end
-    end
+function Registry:remove(id)
+    local s = self.size
+    -- Replace with last element
+    self.items[id] = self.items[s]
+    -- Destroy (potentially duplicate) last element
+    self.items[s] = nil
+    -- Decrement size
+    self.size = s - 1
 end
 
 function Registry:drawAll()
-    for k,v in self:iter() do
+    for k,v in ipairs(self.items) do
         v:draw()
     end
 end
 
 function Registry:updateAll(dt)
-    for k,v in self:iter() do
+    for k,v in ipairs(self.items) do
         if v.destroyed then
             v:_destroy()
-            self.items[k] = nil
+            self:remove(k)
         else
             v:update(dt)
         end

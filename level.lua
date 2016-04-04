@@ -56,7 +56,7 @@ end
 function Level:team(name, color)
     local Team = require("entities/team")
     return self.teams:add(
-        Team.new(self, self.teams.nextID * 200 - 180, love.graphics.getHeight()-20, {
+        Team.new(self, self.teams.size * 200 + 20, love.graphics.getHeight()-20, {
             name  = name,
             color = color,
         })
@@ -66,7 +66,7 @@ end
 function Level:draw()
     self.registry:drawAll()
     self.teams:drawAll()
-    love.graphics.print(love.timer.getFPS() .. ":" .. self.registry.nextID, 0, 0)
+    love.graphics.print(love.timer.getFPS() .. ":" .. self.registry.size, 0, 0)
 end
 function Level:update(dt)
     self.world:update(dt)
