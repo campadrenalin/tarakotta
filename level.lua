@@ -66,6 +66,7 @@ end
 function Level:draw()
     self.registry:drawAll()
     self.teams:drawAll()
+    love.graphics.print(love.timer.getFPS() .. ":" .. self.registry.nextID, 0, 0)
 end
 function Level:update(dt)
     self.world:update(dt)
