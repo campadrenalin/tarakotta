@@ -47,7 +47,7 @@ function Entity:buildPhysics(x, y)
     self.fixture:setCategory(self.physics.category)
 
     -- Circular reference, be sure to explicitly delete
-    self.body:setUserData(self)
+    self.body:setUserData({ ttl = 0.5 })
 end
 
 function Entity:teamName()

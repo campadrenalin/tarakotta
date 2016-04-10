@@ -2,17 +2,18 @@ local Level = {}
 Level.__index = Level
 Level.current = nil
 
-local Registry = require "util/registry"
+-- local Registry = require "util/registry"
 local setupPhysicsCallbacks = require "util/callbacks"
+local Bullet = require "entities/bullet"
 
 function Level.new(path)
     local callback = require("levels/" .. path)
     local level = setmetatable({}, Level)
     level.world = love.physics.newWorld(0,0,true)
-    level.registry = Registry.new()
+    -- level.registry = Registry.new()
     level.name = path
     level.title = path
-    level.teams = Registry.new()
+    -- level.teams = Registry.new()
 
     setupPhysicsCallbacks(level.world)
     callback(level)
@@ -36,9 +37,9 @@ function Level:add(class, x, y, properties)
     if type(class) == "string" then
         class = require("entities/" .. class)
     end
-    return self.registry:add(
+    -- return self.registry:add(
         class.new(self, x, y, properties)
-    )
+        -- )
 end
 function Level:boundaries(type)
     local w = love.graphics.getWidth()
@@ -64,14 +65,29 @@ function Level:team(name, color)
 end
 
 function Level:draw()
-    self.registry:drawAll()
-    self.teams:drawAll()
-    love.graphics.print(love.timer.getFPS() .. ":" .. self.registry.size, 0, 0)
+    -- self.registry:drawAll()
+    -- self.teams:drawAll()
+    love.graphics.print(love.timer.getFPS() .. ":" .. self.world:getBodyCount(), 0, 0)
+    for k, v in ipairs(self.world:getBodyList()) do
+        love.graphics.circle("fill", v:getX(), v:getY(), 2, 4)
+    end
 end
 function Level:update(dt)
+    for i=0,10 do
+        self:add(Bullet, math.random(200, 400), math.random(200, 400), {})
+    end
+    for k, v in ipairs(self.world:getBodyList()) do
+        local entityData = v:getUserData()
+        entityData.ttl = entityData.ttl - dt
+        if entityData.ttl < 0 then
+            v:destroy()
+        end
+    end
     self.world:update(dt)
-    self.registry:updateAll(dt)
-    self.teams:updateAll(dt)
+    -- self.registry:updateAll(dt)
+    -- self.teams:updateAll(dt)
+    collectgarbage()
+    print(collectgarbage("count"))
 end
 
 return Level

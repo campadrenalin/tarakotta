@@ -8,6 +8,7 @@ end
 
 -- Called when two fixtures begin to overlap.
 function beginContact(a,b,col)
+    if 1 then return end
     local a = getEntity(a)
     local b = getEntity(b)
     a:beginContact(b, col)
@@ -17,6 +18,7 @@ end
 -- Called when two fixtures cease to overlap.
 -- This will also be called outside of a world update, when colliding objects are destroyed.
 function endContact(a,b,col)
+    if 1 then return end
     local a = getEntity(a)
     local b = getEntity(b)
     a:endContact(b, col)

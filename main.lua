@@ -6,7 +6,7 @@ end
 
 function love.load()
     startProfile()
-    Level.switchTo("honeycomb")
+    Level.switchTo("leak")
 end
 
 function love.draw()
