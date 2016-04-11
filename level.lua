@@ -37,9 +37,14 @@ function Level:add(class, x, y, properties)
     if type(class) == "string" then
         class = require("entities/" .. class)
     end
-    -- return self.registry:add(
-        class.new(self, x, y, properties)
-        -- )
+
+    local model = setmetatable(properties, class)
+    local body  = model:makeBody(self.world, x, y)
+    local fixture = love.physics.newFixture(body, model.shape or model:buildShape())
+    fixture:setUserData(model)
+    body:setUserData(model)
+
+    return fixture
 end
 function Level:boundaries(type)
     local w = love.graphics.getWidth()
@@ -65,27 +70,20 @@ function Level:team(name, color)
 end
 
 function Level:draw()
-    -- self.registry:drawAll()
-    -- self.teams:drawAll()
     love.graphics.print(love.timer.getFPS() .. ":" .. self.world:getBodyCount(), 0, 0)
     for k, v in ipairs(self.world:getBodyList()) do
-        love.graphics.circle("fill", v:getX(), v:getY(), 2, 4)
+        v:getUserData():draw(v)
     end
 end
 function Level:update(dt)
     for i=0,10 do
-        self:add(Bullet, math.random(200, 400), math.random(200, 400), {})
+        local fixture = self:add(Bullet, math.random(200, 400), math.random(200, 400), {})
+        fixture:getUserData():fireRandom(fixture:getBody())
     end
     for k, v in ipairs(self.world:getBodyList()) do
-        local entityData = v:getUserData()
-        entityData.ttl = entityData.ttl - dt
-        if entityData.ttl < 0 then
-            v:destroy()
-        end
+        v:getUserData():update(v, dt)
     end
     self.world:update(dt)
-    -- self.registry:updateAll(dt)
-    -- self.teams:updateAll(dt)
     collectgarbage()
     print(collectgarbage("count"))
 end

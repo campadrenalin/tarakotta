@@ -1,45 +1,44 @@
 local Entity = require "entities/entity"
-local Bullet = setmetatable({}, Entity);
+local Bullet = setmetatable({
+    type = 'bullet',
+    physics = {
+        type = 'dynamic',
+        category = 2,
+        radius = 2,
+    },
+
+    ttl = 0.5,
+    sent = false,
+    motionCompensation = 0,
+}, Entity);
 Bullet.__index = Bullet
-Bullet.type = 'bullet'
-Bullet.physics = {
-    type = 'dynamic',
-    category = 2,
-    radius = 2,
-}
 
-function Bullet.new(level, x, y, properties)
-    local bullet = Entity.new(Bullet, level, x, y, properties)
-    bullet.body:setBullet(true)
-
-    bullet.ttl = 0.5
-    bullet.sent = false
-    bullet.speed = bullet.speed or math.random(3,9)
-
-    if bullet.target then
-        local b  = bullet.body
-        local bt = bullet.target.body
-        local mc = bullet.motionCompensation or 0
-        local vx, vy = bt:getLinearVelocity()
-        bullet.angle = math.angle(b:getX(), b:getY(), bt:getX() + mc*vx, bt:getY() + mc*vy)
-    else
-        bullet.angle = math.random(0, 2*math.pi)
-    end
-    bullet.body:applyLinearImpulse(
-        bullet.speed * math.cos(bullet.angle),
-        bullet.speed * math.sin(bullet.angle)
+function Bullet:fireAt(body, speed, target)
+    local mc = self.motionCompensation
+    local vx, vy = target:getLinearVelocity()
+    local bx, by = body:getPosition()
+    local tx, ty = target:getPosition()
+    local angle = math.angle(bx, by, tx + mc*vx, ty + mc*vy)
+    return self:fire(body, speed, angle)
+end
+function Bullet:fireRandom(body, speed)
+    self:fire(body, speed, math.random(0, 2*math.pi))
+end
+function Bullet:fire(body, speed, angle)
+    speed = speed or math.random(3, 9)
+    body:applyLinearImpulse(
+        speed * math.cos(angle),
+        speed * math.sin(angle)
     )
-
-    return bullet
 end
 
-function Bullet:draw()
-    self:drawCircle(self.physics.radius, 9, nil, "fill")
+function Bullet:draw(body)
+    self:drawCircle(body, nil, 9, nil, "fill")
 end
-function Bullet:update(dt)
+function Bullet:update(body, dt)
     self.ttl = self.ttl - dt
     if self.ttl < 0 then
-        self:destroy()
+        body:destroy()
     end
 end
 

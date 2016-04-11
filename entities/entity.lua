@@ -4,50 +4,11 @@ Entity.__index = Entity
 Entity.color = colors.white
 Entity.type  = 'entity'
 
-function shallow_clone(orig)
-    local clone = {}
-    if not orig then return clone end
-
-    for k, v in pairs(orig) do
-        clone[k] = v
-    end
-    return clone
-end
-
-function Entity.new(class, level, x, y, properties)
-    local entity = setmetatable(shallow_clone(properties), class)
-    entity.class   = class
-    entity.level   = level
-    entity.destroyed = false
-    entity:buildPhysics(x, y)
-
-    return entity
-end
-function Entity:make(class, x, y, properties)
-    return self.level:add(class, x, y, properties)
-end
-
 function Entity:buildShape()
     return love.physics.newCircleShape(self.physics.radius)
 end
-function Entity:buildPhysics(x, y)
-    if self.physics == nil then
-        -- Simple object with no real physics enabled
-        self.x = x
-        self.y = y
-        return
-    end
-
-    -- Add physics-related properties to self
-    self.body    = love.physics.newBody(self.level.world, x, y, self.physics.type)
-    self.shape   = self:buildShape()
-    self.fixture = love.physics.newFixture(self.body, self.shape)
-
-    -- Make this entity type maskable and identifiable
-    self.fixture:setCategory(self.physics.category)
-
-    -- Circular reference, be sure to explicitly delete
-    self.body:setUserData({ ttl = 0.5 })
+function Entity:makeBody(world, x, y)
+    return love.physics.newBody(world, x, y, self.physics.type)
 end
 
 function Entity:teamName()
@@ -72,24 +33,15 @@ function Entity:getColor(c)
     return c or teamColor or self.color
 end
 
-function Entity:getX() return self.body:getX() end
-function Entity:getY() return self.body:getY() end
-
 -- Individual methods
 function Entity:draw() end
 function Entity:update() end
 
-function Entity:drawCircle(radius,quality, c, style)
-    style = style or "line"
+function Entity:drawCircle(body, radius, quality, c, style)
+    style  = style  or "line"
+    radius = radius or self.physics.radius
     colors.drawIn(self:getColor(c))
-    love.graphics.circle(style, self.body:getX(), self.body:getY(), radius, quality)
-end
-
-function Entity:destroy()
-    self.destroyed = true
-end
-function Entity:_destroy()
-    self.body:destroy()
+    love.graphics.circle(style, body:getX(), body:getY(), radius, quality)
 end
 
 function Entity:beginContact(other, collision) end
