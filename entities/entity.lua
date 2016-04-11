@@ -4,12 +4,13 @@ Entity.__index = Entity
 Entity.color = colors.white
 Entity.type  = 'entity'
 
-function Entity:buildShape()
+function Entity:makeShape()
     return love.physics.newCircleShape(self.physics.radius)
 end
 function Entity:makeBody(world, x, y)
     return love.physics.newBody(world, x, y, self.physics.type)
 end
+function Entity:configure(body, fixture) end
 
 function Entity:teamName()
     if self.team then

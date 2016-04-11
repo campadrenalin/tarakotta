@@ -2,7 +2,6 @@ local Level = {}
 Level.__index = Level
 Level.current = nil
 
--- local Registry = require "util/registry"
 local setupPhysicsCallbacks = require "util/callbacks"
 local Bullet = require "entities/bullet"
 
@@ -10,10 +9,8 @@ function Level.new(path)
     local callback = require("levels/" .. path)
     local level = setmetatable({}, Level)
     level.world = love.physics.newWorld(0,0,true)
-    -- level.registry = Registry.new()
     level.name = path
     level.title = path
-    -- level.teams = Registry.new()
 
     setupPhysicsCallbacks(level.world)
     callback(level)
@@ -40,9 +37,10 @@ function Level:add(class, x, y, properties)
 
     local model = setmetatable(properties, class)
     local body  = model:makeBody(self.world, x, y)
-    local fixture = love.physics.newFixture(body, model.shape or model:buildShape())
+    local fixture = love.physics.newFixture(body, model.shape or model:makeShape())
     fixture:setUserData(model)
     body:setUserData(model)
+    model:configure(body, fixture)
 
     return fixture
 end
