@@ -6,7 +6,7 @@ end
 
 function love.load()
     startProfile()
-    Level.switchTo("leak")
+    Level.switchTo("demo")
 end
 
 function love.draw()

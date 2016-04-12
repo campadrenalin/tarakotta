@@ -10,9 +10,11 @@ function setup(level)
     level:team('2UP', colors.red):spawn(100, 200, {
         keymap = 'wasd',
     })
+    --[[
     for i=1,20 do
         level:add('tower', i*32, i*32)
     end
+    --]]
 end
 
 return setup

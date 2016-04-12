@@ -1,27 +1,29 @@
 local Entity = require "entities/entity"
-local Wall = setmetatable({}, Entity);
+local Wall = setmetatable({
+    type = 'wall',
+    physics = {
+        type = 'static',
+        category = 5,
+    },
+
+    behavior = 'solid',
+}, Entity);
 Wall.__index = Wall
-Wall.type = 'wall'
-Wall.physics = {
-    type = 'static',
-    category = 5,
-}
 
-function Wall.new(level, p1, p2, type)
-    local wall = Entity.new(Wall, level, 0, 0, { p1 = p1, p2 = p2, type = type })
-    wall.fixture:setMask(1) -- Don't bother towers
-
-    return wall
+function Wall:makeBody(world, p1, p2)
+    self.p1 = p1
+    self.p2 = p2
+    return love.physics.newBody(world, 0, 0, self.physics.type)
 end
-function Wall:buildShape()
+function Wall:configure(body, fixture)
+    -- fixture:setMask(1) -- Don't bother towers
+end
+function Wall:makeShape()
     return love.physics.newEdgeShape(self.p1.x, self.p1.y, self.p2.x, self.p2.y)
 end
 
-function Wall:getX() return 0 end
-function Wall:getY() return 0 end
-
 function Wall:beginContact(other, collision)
-    if self.type == "murder" then
+    if self.behavior == "murder" then
         other:destroy()
     end
 end

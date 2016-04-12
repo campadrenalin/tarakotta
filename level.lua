@@ -11,6 +11,7 @@ function Level.new(path)
     level.world = love.physics.newWorld(0,0,true)
     level.name = path
     level.title = path
+    level.teams = {}
 
     setupPhysicsCallbacks(level.world)
     callback(level)
@@ -35,6 +36,7 @@ function Level:add(class, x, y, properties)
         class = require("entities/" .. class)
     end
 
+    properties.level = self
     local model = setmetatable(properties, class)
     local body  = model:makeBody(self.world, x, y)
     local fixture = love.physics.newFixture(body, model.shape or model:makeShape())
@@ -44,7 +46,7 @@ function Level:add(class, x, y, properties)
 
     return fixture
 end
-function Level:boundaries(type)
+function Level:boundaries(behavior)
     local w = love.graphics.getWidth()
     local h = love.graphics.getHeight()
     local nw = { x = 0, y = 0 }
@@ -52,19 +54,24 @@ function Level:boundaries(type)
     local ne = { x = w, y = 0 }
     local se = { x = w, y = h }
 
-    self:add("wall", nw, ne, type)
-    self:add("wall", ne, se, type)
-    self:add("wall", se, sw, type)
-    self:add("wall", sw, nw, type)
+    self:add("wall", nw, ne, { behavior = behavior })
+    self:add("wall", ne, se, { behavior = behavior })
+    self:add("wall", se, sw, { behavior = behavior })
+    self:add("wall", sw, nw, { behavior = behavior })
 end
 function Level:team(name, color)
     local Team = require("entities/team")
-    return self.teams:add(
-        Team.new(self, self.teams.size * 200 + 20, love.graphics.getHeight()-20, {
-            name  = name,
-            color = color,
-        })
-    )
+    local teams = self.teams
+    local latest = Team.new({
+        level = self,
+        x = #teams * 200 + 20,
+        y = love.graphics.getHeight()-20,
+
+        name  = name,
+        color = color,
+    })
+    teams[#teams+1] = latest
+    return latest
 end
 
 function Level:draw()
@@ -72,14 +79,16 @@ function Level:draw()
     for k, v in ipairs(self.world:getBodyList()) do
         v:getUserData():draw(v)
     end
+    for k, v in ipairs(self.teams) do
+        v:draw()
+    end
 end
 function Level:update(dt)
-    for i=0,10 do
-        local fixture = self:add(Bullet, math.random(200, 400), math.random(200, 400), {})
-        fixture:getUserData():fireRandom(fixture:getBody())
-    end
     for k, v in ipairs(self.world:getBodyList()) do
         v:getUserData():update(v, dt)
+    end
+    for k, v in ipairs(self.teams) do
+        v:update(dt)
     end
     self.world:update(dt)
     collectgarbage()

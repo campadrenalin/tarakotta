@@ -13,6 +13,10 @@ local Bullet = setmetatable({
 }, Entity);
 Bullet.__index = Bullet
 
+function Bullet:configure(body, fixture)
+    body:setBullet(true)
+end
+
 function Bullet:fireAt(body, speed, target)
     local mc = self.motionCompensation
     local vx, vy = target:getLinearVelocity()

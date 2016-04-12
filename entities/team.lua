@@ -1,16 +1,17 @@
 local colors = require('util/colors')
 local Entity = require "entities/entity"
-local Team   = setmetatable({}, Entity);
+local Team   = setmetatable({
+    SCORE_INTERVAL = 1,
+
+    score = 0,
+    lastScoreDelta = 0,
+    countdown = 1, -- Team.SCORE_INTERVAL
+}, Entity);
 Team.__index = Team
-Team.SCORE_INTERVAL = 1
 
-function Team.new(level, x, y, properties)
-    local team = Entity.new(Team, level, x, y, properties)
-    team.score = 0
-    team.lastScoreDelta = 0
-    team.countdown = Team.SCORE_INTERVAL
-    team.team = team -- Helper for superclass methods
-
+function Team.new(props)
+    local team = setmetatable(props, Team)
+    team.team = team
     return team
 end
 
@@ -41,11 +42,13 @@ function Team:update(dt)
 
     self.countdown = self.countdown + self.SCORE_INTERVAL
     local delta = 0
+    --[[
     for k, v in ipairs(self.level.registry.items) do
         if v.type == 'tower' and self:isFriendly(v) then
             delta = delta + 1
         end
     end
+    --]]
     self.lastScoreDelta = delta
     self.score = self.score + delta
 end
