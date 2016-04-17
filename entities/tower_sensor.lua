@@ -1,23 +1,21 @@
 local Entity = require "entities/entity"
-local Sensor  = setmetatable({}, Entity);
+local Sensor  = setmetatable({
+    type = 'tower_sensor',
+    physics = {
+        type = 'static',
+        category = 4,
+        radius = 128,
+    },
+}, Entity);
 Sensor.__index = Sensor
-Sensor.type = 'tower_sensor'
-Sensor.physics = {
-    type = 'static',
-    category = 4,
-    radius = 128,
-}
 
 local Registry = require "util/registry"
 
-function Sensor.new(world, x, y, tower)
-    local sensor = Entity.new(Sensor, world, x, y)
-    sensor.fixture:setMask(2)
-    sensor.fixture:setSensor(true)
+function Sensor:configure(body, fixture)
+    fixture:setMask(2)
+    fixture:setSensor(true)
 
-    sensor.tower = tower
-    sensor.targets_in_range = {}
-    return sensor
+    self.targets_in_range = {}
 end
 
 function Sensor:reconsiderTarget()
