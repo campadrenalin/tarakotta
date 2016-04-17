@@ -3,26 +3,24 @@ function establish(world)
 end
 
 function getEntity(fixture)
-    return fixture:getBody():getUserData()
+    return fixture:getUserData()
 end
 
 -- Called when two fixtures begin to overlap.
 function beginContact(a,b,col)
-    if 1 then return end
-    local a = getEntity(a)
-    local b = getEntity(b)
-    a:beginContact(b, col)
-    b:beginContact(a, col)
+    local ea = getEntity(a)
+    local eb = getEntity(b)
+    ea:beginContact(a, b, col)
+    eb:beginContact(b, a, col)
 end
 
 -- Called when two fixtures cease to overlap.
 -- This will also be called outside of a world update, when colliding objects are destroyed.
 function endContact(a,b,col)
-    if 1 then return end
-    local a = getEntity(a)
-    local b = getEntity(b)
-    a:endContact(b, col)
-    b:endContact(a, col)
+    local ea = getEntity(a)
+    local eb = getEntity(b)
+    ea:endContact(a, b, col)
+    eb:endContact(b, a, col)
 end
 
 -- Gets called before a collision gets resolved.

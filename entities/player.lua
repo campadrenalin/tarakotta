@@ -73,16 +73,17 @@ function Player:heal(dt)
     end
 end
 
-function Player:beginContact(other, collision)
+function Player:beginContact(my_fixture, their_fixture, collision)
+    local other = their_fixture:getUserData()
     if other.physics.category == 2 and self:isEnemy(other) then -- bullet
-        local vx, vy = other.body:getLinearVelocity()
+        local vx, vy = their_fixture:getBody():getLinearVelocity()
         local speed = math.dist(0,0,vx,vy)
         self.hp = self.hp - speed/20
         if self.hp < 0 then
-            self:destroy()
+            my_fixture:getBody():destroy()
         end
 
-        other:destroy()
+        their_fixture:getBody():destroy()
         return
     end
 end

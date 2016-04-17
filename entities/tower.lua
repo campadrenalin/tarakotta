@@ -62,7 +62,8 @@ function Tower:draw(body)
 
 end
 
-function Tower:beginContact(other, collision)
+function Tower:beginContact(my_fixture, their_fixture, collision)
+    local other = their_fixture:getUserData()
     if other.physics.category == 3 then -- player
         self:tag(other.team)
     elseif other.physics.category == 2 then -- bullet
@@ -75,29 +76,32 @@ function Tower:update(body, dt)
     if self.ammo <= 0 then
         self:tag(nil)
     end
-    if math.random(0, MAX_AMMO*1200*dt) < self.ammo then self:fireBullet() end
+    if math.random(0, MAX_AMMO*1200*dt) < self.ammo then self:fireBullet(body) end
     if self.target == nil then return end
 
     self.cooldown = self.cooldown - dt
     if self.cooldown < 0 then
-        self:fireBullet()
+        self:fireBullet(body)
     end
 end
 
-function Tower:fireBullet()
+function Tower:fireBullet(b)
     self.cooldown = COOLDOWN - self.cooldown
     if self.ammo < 1 then return end
     self.ammo = self.ammo - 1
 
-    local b = self.body
-    local speed = 7
-    if not self.target then speed = math.random(1,2) end
-    local bullet = self:make(Bullet, b:getX(), b:getY(), {
+    local bullet_fixture = self.level:add(Bullet, b:getX(), b:getY(), {
         team   = self.team,
-        target = self.target,
-        speed  = speed,
         motionCompensation = 0.1 + math.sin(self.ammo/50)*0.1, -- sweep between 0 and .2 over time
     })
+    local bullet = bullet_fixture:getUserData()
+    local bullet_body = bullet_fixture:getBody()
+
+    if self.target then
+        bullet:fireAt(bullet_body, 7, self.target)
+    else
+        bullet:fireRandom(bullet_body, math.random(1,2))
+    end
 end
 
 return Tower
