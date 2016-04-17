@@ -6,6 +6,9 @@ local Sensor  = setmetatable({
         category = 4,
         radius = 128,
     },
+
+    color  = { r = 40, b = 40, g = 40, a = 256 },
+    dirty  = true,
 }, Entity);
 Sensor.__index = Sensor
 
@@ -17,30 +20,32 @@ function Sensor:configure(body, fixture)
 
     self.targets_in_range = {}
 end
+function Sensor:draw(fixture)
+    -- self:drawCircle(fixture, nil, 20)
+end
 
-function Sensor:reconsiderTarget()
+function Sensor:findEnemyOf(entity)
+    self.dirty = false
     for k, v in pairs(self.targets_in_range) do
-        if self:isEnemy(v) then
-            self.tower.target = v
-            return
+        if entity:isEnemy(v:getUserData()) then
+            return v
         end
     end
-    self.tower.target = nil
-end
-function Sensor:teamName()
-    return self.tower:teamName()
+    return nil
 end
 
-function Sensor:beginContact(other, collision)
+function Sensor:beginContact(my_fixture, their_fixture, collision)
+    local other = their_fixture:getUserData()
     if other.physics.category == 3 then
-        self.targets_in_range[other.uniq_id] = other
-        self:reconsiderTarget()
+        self.targets_in_range[other.uniq_id] = their_fixture
+        self.dirty = true
     end
 end
-function Sensor:endContact(other, collision)
+function Sensor:endContact(my_fixture, their_fixture, collision)
+    local other = their_fixture:getUserData()
     if other.physics.category == 3 then
         self.targets_in_range[other.uniq_id] = nil
-        self:reconsiderTarget()
+        self.dirty = true
     end
 end
 

@@ -12,6 +12,7 @@ function Level.new(path)
     level.name = path
     level.title = path
     level.teams = {}
+    level.nextID = 0
 
     setupPhysicsCallbacks(level.world)
     callback(level)
@@ -37,6 +38,9 @@ function Level:add(class, x, y, properties)
     end
 
     properties.level = self
+    properties.uniq_id = self.nextID
+    self.nextID = self.nextID + 1
+
     local model = setmetatable(properties, class)
     local body  = model:makeBody(self.world, x, y)
     local fixture = love.physics.newFixture(body, model.shape or model:makeShape())

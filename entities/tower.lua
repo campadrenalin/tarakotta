@@ -23,8 +23,8 @@ local Sensor = require "entities/tower_sensor"
 require "util/extra_math"
 
 function Tower:configure(body, fixture)
-    print("setting self.sensor")
-    self.sensor = self.level:add(Sensor, x, y, { tower = self }):getUserData()
+    local x, y = body:getPosition()
+    self.sensor = self.level:add(Sensor, x, y, {}):getUserData()
     fixture:setMask(5)
 end
 
@@ -36,7 +36,7 @@ function Tower:tag(team)
         self.team = nil
         self.ammo = 0
     end
-    self.sensor:reconsiderTarget()
+    self.target = self.sensor:findEnemyOf(self)
 end
 
 function Tower:draw(body)
@@ -48,16 +48,18 @@ function Tower:draw(body)
 
     -- DEBUG OUTPUT
     if DEBUG then
+        local x, y = body:getPosition()
         for k, v in pairs(self.sensor.targets_in_range) do
-            love.graphics.line(body:getX(), body:getY(), v.body:getX(), v.body:getY())
+            local vx, vy = v:getBody():getPosition()
+            love.graphics.line(x, y, vx, vy)
             if self.target and v.id == self.target.id then
                 love.graphics.circle("fill",
-                    math.lerp(body:getX(), v.body:getX(), 0.2),
-                    math.lerp(body:getY(), v.body:getY(), 0.2),
+                    math.lerp(x, vx, 0.2),
+                    math.lerp(y, vy, 0.2),
                     3, 10)
             end
         end
-        love.graphics.print(self.cooldown, self.body:getX() + self.physics.radius*2, self.body:getY())
+        love.graphics.print(self.cooldown, x + self.physics.radius*2, y)
     end
 
 end
@@ -77,6 +79,9 @@ function Tower:update(body, dt)
         self:tag(nil)
     end
     if math.random(0, MAX_AMMO*1200*dt) < self.ammo then self:fireBullet(body) end
+    if self.sensor.dirty then
+        self.target = self.sensor:findEnemyOf(self)
+    end
     if self.target == nil then return end
 
     self.cooldown = self.cooldown - dt
@@ -97,8 +102,8 @@ function Tower:fireBullet(b)
     local bullet = bullet_fixture:getUserData()
     local bullet_body = bullet_fixture:getBody()
 
-    if self.target then
-        bullet:fireAt(bullet_body, 7, self.target)
+    if self.target and not self.target:isDestroyed() then
+        bullet:fireAt(bullet_body, 7, self.target:getBody())
     else
         bullet:fireRandom(bullet_body, math.random(1,2))
     end
