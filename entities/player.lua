@@ -54,7 +54,7 @@ end
 
 function Player:inputMotion(body, dt)
     local i = self.input
-    i:update(dt, self)
+    i:update(dt, self, body)
     local fx = i:value("left", -FORCE,
         i:value("right", FORCE, 0))
     local fy = i:value("up", -FORCE,

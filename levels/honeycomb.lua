@@ -20,7 +20,7 @@ function setup(level)
     for row=1,10 do
         local shift = (row % 2) * 64 - 128
         for col=1,10 do
-            level:add('tower', col*128 + shift, row*64 - 64)
+            level:add('tower', col*128 + shift, row*64 - 64, {})
         end
     end
 end

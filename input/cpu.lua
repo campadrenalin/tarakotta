@@ -32,11 +32,11 @@ function CpuInput:debugDraw()
         love.graphics.line(d.x, d.y, target.body:getX(), target.body:getY())
     end
 end
-function CpuInput:update(dt, owner)
+function CpuInput:update(dt, owner, body)
     local d = self.draws
     d.targets = {}
-    d.x = owner:getX()
-    d.y = owner:getY()
+    d.x = body:getX()
+    d.y = body:getY()
 
     local bestTarget = { -- single thing to go towards
         target   = nil,
@@ -46,28 +46,29 @@ function CpuInput:update(dt, owner)
     owner.level.world:queryBoundingBox(
         d.x - BOX_SIZE, d.y - BOX_SIZE, d.x + BOX_SIZE, d.y + BOX_SIZE,
         function(fixture)
-            local target = fixture:getBody():getUserData()
+            local target = fixture:getUserData()
+            local tx, ty = fixture:getBody():getPosition()
             if target.type ~= "tower"
-                or target:getX() > love.graphics.getWidth() - 20
-                or target:getY() > love.graphics.getHeight() - 20
+                or tx > love.graphics.getWidth() - 20
+                or ty > love.graphics.getHeight() - 20
                     then return true end
-            table.insert(d.targets, target)
+            table.insert(d.targets, fixture)
             if target:teamName() == nil then
-                local dist = math.object_angle(owner, target) + math.random(0, 100)
+                local dist = math.object_angle(body, fixture:getBody()) + math.random(0, 100)
                 if dist < bestTarget.distance then
-                    bestTarget.target = target
+                    bestTarget.target = fixture
                 end
             elseif owner:isEnemy(target) then
                 local dampen = 40 + math.random(0, 60)
-                scurry.x = scurry.x + (d.x - target:getX())/dampen
-                scurry.y = scurry.y + (d.y - target:getY())/dampen
+                scurry.x = scurry.x + (d.x - tx)/dampen
+                scurry.y = scurry.y + (d.y - ty)/dampen
             end
             return true
         end
     )
     if bestTarget.target ~= nil then
         d.targets.best = bestTarget.target
-        local tx, ty = math.vector_xy(math.object_angle(owner, bestTarget.target), 10)
+        local tx, ty = math.vector_xy(math.object_angle(body, bestTarget.target:getBody()), 10)
         scurry.x = scurry.x + tx
         scurry.y = scurry.y + ty
     end
