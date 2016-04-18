@@ -44,6 +44,7 @@ function Level:add(class, x, y, properties)
     local model = setmetatable(properties, class)
     local body  = model:makeBody(self.world, x, y)
     local fixture = love.physics.newFixture(body, model.shape or model:makeShape())
+    fixture:setCategory(model.physics.category or 16)
     fixture:setUserData(model)
     body:setUserData(model)
     model:configure(body, fixture)
@@ -80,6 +81,8 @@ end
 
 function Level:draw()
     love.graphics.print(love.timer.getFPS() .. ":" .. self.world:getBodyCount(), 0, 0)
+    collectgarbage()
+    love.graphics.print(collectgarbage("count"), 0, 20)
     for k, v in ipairs(self.world:getBodyList()) do
         v:getUserData():draw(v)
     end
@@ -95,8 +98,6 @@ function Level:update(dt)
         v:update(dt)
     end
     self.world:update(dt)
-    collectgarbage()
-    print(collectgarbage("count"))
 end
 
 return Level
