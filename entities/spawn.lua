@@ -28,7 +28,7 @@ end
 
 function Spawn:draw(body) end
 function Spawn:update(body, dt)
-    if self.player == nil or self.player.destroyed then
+    if self.player == nil or self.player:isDestroyed() then
         if self.cooldown > 0 then
             self.cooldown = self.cooldown - dt
         else
