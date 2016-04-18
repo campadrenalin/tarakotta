@@ -12,8 +12,6 @@ local Sensor  = setmetatable({
 }, Entity);
 Sensor.__index = Sensor
 
-local Registry = require "util/registry"
-
 function Sensor:configure(body, fixture)
     fixture:setMask(2)
     fixture:setSensor(true)
