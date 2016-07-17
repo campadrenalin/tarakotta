@@ -1,0 +1,18 @@
+{
+	"name": "tarakotta",
+	"authors": [
+		"Philip Horger"
+	],
+	"dependencies": {
+		"derelict-sdl2": "~>2.0.0",
+		"derelict-gl3": "~>1.0.18",
+		"glamour": "~>1.0.1"
+	},
+	"sourcefiles": [
+		"app.d",
+		"sdl_app.d"
+	],
+	"description": "Fast-paced retro-style game",
+	"copyright": "Copyright © 2016, Philip Horger",
+	"license": "MIT"
+}
