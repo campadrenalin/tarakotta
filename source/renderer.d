@@ -19,8 +19,8 @@ struct Circle {
 }
 
 Circle[] circles = [
-	{ .80, .20, .1, { 1, 0, 0 } },
-	{ .20, .20, .1, { 1, 1, 1 } },
+	{ 32,  0, 16, { 1, 0, 0 } },
+	{  0, 32, 16, { 1, 1, 1 } },
 ];
 
 /*
@@ -78,7 +78,7 @@ class Shape {
 	void setLens(Lens lens) {
 		program.bind();
 		program.uniform2f("lens_offset", lens.x, lens.y);
-		program.uniform2f("lens_scales", lens.scale_x, lens.scale_y);
+		program.uniform2f("lens_scales", lens.scale_x, -lens.scale_y);
 	}
 
 	void render(Circle c) {
@@ -89,13 +89,14 @@ class Shape {
 
 		float[3] color = [c.color.r, c.color.g, c.color.b];
 		float t = to!float(anim)/30;
-		program.uniform2f( "offset", c.x + sin(t)/4, c.y + cos(t)/4);
+		program.uniform2f( "offset", c.x + sin(t)*40, c.y + cos(t)*40);
 		program.uniform1f( "radius", c.radius);
 		program.uniform3fv("color",  color);
 		GLint attrPosition = program.get_attrib_location("position");
 
 		glEnableVertexAttribArray(attrPosition);
 		glVertexAttribPointer(attrPosition, 2, GL_FLOAT, GL_FALSE, 0, null);
+		// glDrawArrays(GL_TRIANGLE_FAN, 0, numVertices/2);
 		glDrawArrays(GL_LINE_LOOP, 0, numVertices/2);
 		glDisableVertexAttribArray(attrPosition);
 
@@ -147,7 +148,7 @@ class Renderer {
 	void render() {
 		clear();
 		Lens lens = {
-			0.1, 0, 32, 68
+			0, 0, 320, 680
 		};
 		circleShape.setLens(lens);
 		foreach (c; circles) {
