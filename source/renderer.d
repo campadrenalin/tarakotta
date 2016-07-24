@@ -2,6 +2,7 @@ module renderer;
 import std.math;
 import std.conv;
 import std.stdio;
+import std.random;
 
 import derelict.sdl2.sdl;
 import derelict.opengl3.gl3;
@@ -150,6 +151,11 @@ class Renderer {
 	void render() {
 		clear();
 		circleShape.setLens(lens);
+		Circle newCircle = {
+			uniform(-lens.width, lens.width), uniform(-lens.height, lens.height), 8,
+			{ 0, 1, 0 }
+		};
+		circles ~= newCircle;
 		foreach (c; circles) {
 			circleShape.render(c);
 		}
