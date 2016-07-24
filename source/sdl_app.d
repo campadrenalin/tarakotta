@@ -42,10 +42,17 @@ class SDLApplication {
 		r = new renderer.Renderer();
 	}
 
+	void resize_window(SDL_Event *event) {
+		r.lens.width  = event.window.data1;
+		r.lens.height = event.window.data2;
+	}
+
 	void handle_event(SDL_Event *event) {
 		switch (event.type) {
 			case SDL_QUIT:
 				keep_running = false; break;
+			case SDL_WINDOWEVENT_RESIZED:
+				resize_window(event); break;
 			default:
 				break;
 		}

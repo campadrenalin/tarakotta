@@ -21,6 +21,7 @@ struct Circle {
 Circle[] circles = [
 	{ 32,  0, 16, { 1, 0, 0 } },
 	{  0, 32, 16, { 1, 1, 1 } },
+	{ 32, 32, 16, { 0, 0, 1 } },
 ];
 
 /*
@@ -51,7 +52,7 @@ float[] computeCircleVertexes (int n) {
 }
 
 struct Lens {
-	float x, y, scale_x, scale_y;
+	float x, y, width, height;
 }
 
 class Shape {
@@ -78,7 +79,7 @@ class Shape {
 	void setLens(Lens lens) {
 		program.bind();
 		program.uniform2f("lens_offset", lens.x, lens.y);
-		program.uniform2f("lens_scales", lens.scale_x, -lens.scale_y);
+		program.uniform2f("lens_scales", lens.width, -lens.height);
 	}
 
 	void render(Circle c) {
@@ -114,6 +115,7 @@ class Shape {
 
 class Renderer {
 	Shape circleShape;
+	Lens lens = { 0, 0, 0, 0};
 
 	this() {
 		circleShape = new Shape("circle", `
@@ -147,9 +149,6 @@ class Renderer {
 
 	void render() {
 		clear();
-		Lens lens = {
-			0, 0, 320, 680
-		};
 		circleShape.setLens(lens);
 		foreach (c; circles) {
 			circleShape.render(c);
