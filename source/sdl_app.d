@@ -2,6 +2,7 @@ module sdl_app;
 
 import std.string;
 import std.conv;
+import std.stdio;
 
 import derelict.sdl2.sdl;
 import derelict.opengl3.gl3;
@@ -42,19 +43,26 @@ class SDLApplication {
 		r = new renderer.Renderer();
 	}
 
-	void resize_window(SDL_Event *event) {
-		r.lens.width  = event.window.data1;
-		r.lens.height = event.window.data2;
+	void resize_window(SDL_WindowEvent *we) {
+		r.lens.width  = we.data1;
+		r.lens.height = we.data2;
+		glViewport(0, 0, we.data1, we.data2);
+	}
+
+	void handle_window_event(SDL_WindowEvent *we) {
+		switch(we.event) {
+			case SDL_WINDOWEVENT_RESIZED: resize_window(we); break;
+			default: break;
+		}
 	}
 
 	void handle_event(SDL_Event *event) {
 		switch (event.type) {
 			case SDL_QUIT:
 				keep_running = false; break;
-			case SDL_WINDOWEVENT_RESIZED:
-				resize_window(event); break;
-			default:
-				break;
+			case SDL_WINDOWEVENT:
+				handle_window_event(&event.window); break;
+			default: break;
 		}
 	}
 
