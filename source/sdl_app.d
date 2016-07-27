@@ -32,7 +32,7 @@ class SDLApplication {
 
 		sdlwindow = SDL_CreateWindow(toStringz(title),
 			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-			width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+			width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 
 		if (!sdlwindow)
 			throw new Exception("Failed to create a SDL window: " ~ to!string(SDL_GetError()));
