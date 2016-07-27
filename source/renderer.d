@@ -11,18 +11,15 @@ import glamour.vao: VAO;
 import glamour.shader: Shader;
 import glamour.vbo: Buffer;
 
-struct Color {
-	float r, g, b;
-}
 struct Circle {
 	float x, y, radius;
-	Color color;
-}
+	float[3] color;
+};
 
 Circle[] circles = [
-	{ 32,  0, 16, { 1, 0, 0 } },
-	{  0, 32, 16, { 1, 1, 1 } },
-	{ 32, 32, 16, { 0, 0, 1 } },
+	{ 32,  0, 16, [ 1, 0, 0 ] },
+	{  0, 32, 16, [ 1, 1, 1 ] },
+	{ 32, 32, 16, [ 0, 0, 1 ] },
 ];
 
 /*
@@ -60,6 +57,7 @@ class Shape {
 	VAO vao;
 	Buffer vbo;
 	Shader program;
+    GLint  attrPosition;
 	int numVertices;
 	int anim = 0;
 
@@ -83,25 +81,31 @@ class Shape {
 		program.uniform2f("lens_scales", lens.width, -lens.height);
 	}
 
-	void render(Circle c) {
+    float spinX, spinY;
+    void setup() {
 		anim++;
 		vao.bind();
 		vbo.bind();
 		program.bind();
 
-		float[3] color = [c.color.r, c.color.g, c.color.b];
-		float t = to!float(anim)/30;
-		program.uniform2f( "offset", c.x + sin(t)*40, c.y + cos(t)*40);
-		program.uniform1f( "radius", c.radius);
-		program.uniform3fv("color",  color);
-		GLint attrPosition = program.get_attrib_location("position");
+		float t = to!float(anim)/3;
+        spinX = sin(t)*40;
+        spinY = cos(t)*40;
 
+		attrPosition = program.get_attrib_location("position");
 		glEnableVertexAttribArray(attrPosition);
 		glVertexAttribPointer(attrPosition, 2, GL_FLOAT, GL_FALSE, 0, null);
+    }
+	void render(Circle c) {
+		program.uniform2f( "offset", c.x + spinX, c.y + spinY);
+		program.uniform1f( "radius", c.radius);
+		program.uniform3fv("color",  c.color);
+
 		// glDrawArrays(GL_TRIANGLE_FAN, 0, numVertices/2);
 		glDrawArrays(GL_LINE_LOOP, 0, numVertices/2);
+    }
+    void teardown() {
 		glDisableVertexAttribArray(attrPosition);
-
 		vao.unbind();
 		vbo.unbind();
 		program.unbind();
@@ -137,7 +141,7 @@ class Renderer {
 			void main(void) {
 				gl_FragColor = vec4(color, 1.0);
 			}
-		`, computeCircleVertexes(40));
+		`, computeCircleVertexes(10));
 	}
 	~this() {
 		delete circleShape;
@@ -153,11 +157,13 @@ class Renderer {
 		circleShape.setLens(lens);
 		Circle newCircle = {
 			uniform(-lens.width, lens.width), uniform(-lens.height, lens.height), 8,
-			{ 0, 1, 0 }
+			[ 0, 1, 0 ]
 		};
 		circles ~= newCircle;
+        circleShape.setup();
 		foreach (c; circles) {
 			circleShape.render(c);
 		}
+        circleShape.teardown();
 	}
 }
