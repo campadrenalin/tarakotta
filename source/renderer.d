@@ -61,6 +61,8 @@ class Shape {
 	int numVertices;
 	int anim = 0;
 
+    Lens lens;
+
 	this(const string name, const string program_source, float[] vertices) {
 		vbo = new Buffer(vertices);
 		vao = new VAO();
@@ -75,29 +77,22 @@ class Shape {
 		glLineWidth(2);
 	}
 
-	void setLens(Lens lens) {
-		program.bind();
-		program.uniform2f("lens_offset", lens.x, lens.y);
-		program.uniform2f("lens_scales", lens.width, -lens.height);
-	}
-
-    float spinX, spinY;
     void setup() {
-		anim++;
 		vao.bind();
 		vbo.bind();
 		program.bind();
 
-		float t = to!float(anim)/3;
-        spinX = sin(t)*40;
-        spinY = cos(t)*40;
+		anim++;
+		float t = to!float(anim)/2;
+		program.uniform2f("lens_offset", lens.x + sin(t)*40, lens.y + cos(t)*40);
+		program.uniform2f("lens_scales", lens.width, -lens.height);
 
 		attrPosition = program.get_attrib_location("position");
 		glEnableVertexAttribArray(attrPosition);
 		glVertexAttribPointer(attrPosition, 2, GL_FLOAT, GL_FALSE, 0, null);
     }
 	void render(Circle c) {
-		program.uniform2f( "offset", c.x + spinX, c.y + spinY);
+		program.uniform2f( "offset", c.x, c.y);
 		program.uniform1f( "radius", c.radius);
 		program.uniform3fv("color",  c.color);
 
@@ -154,7 +149,7 @@ class Renderer {
 
 	void render() {
 		clear();
-		circleShape.setLens(lens);
+		circleShape.lens = lens;
 		Circle newCircle = {
 			uniform(-lens.width, lens.width), uniform(-lens.height, lens.height), 8,
 			[ 0, 1, 0 ]
