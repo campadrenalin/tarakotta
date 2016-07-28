@@ -22,6 +22,16 @@ Circle[] circles = [
 	{ 32, 32, 16, [ 0, 0, 1 ] },
 ];
 
+Buffer circlesToBuffer(Circle[] circles) {
+    float[] properties;
+    properties.reserve(circles.length * 6);
+    for (c in circles) {
+        properties =~ [c.x, c.y, c.radius];
+        properties =~ c.color;
+    }
+    return new Buffer(properties);
+}
+
 /*
    glVertexAttribPointer(index, size, type, normalized, stride, *offset)
    	boundVAO.attributes[index] = new Attribute(
