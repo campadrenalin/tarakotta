@@ -22,6 +22,7 @@ Circle[] circles = [
 	{ 32, 32, 16, [ 0, 0, 1 ] },
 ];
 
+/*
 Buffer circlesToBuffer(Circle[] circles) {
     float[] properties;
     properties.reserve(circles.length * 6);
@@ -32,7 +33,6 @@ Buffer circlesToBuffer(Circle[] circles) {
     return new Buffer(properties);
 }
 
-/*
    glVertexAttribPointer(index, size, type, normalized, stride, *offset)
    	boundVAO.attributes[index] = new Attribute(
 		buffer_pointer   => boundVBO + offset,
@@ -47,6 +47,11 @@ Buffer circlesToBuffer(Circle[] circles) {
    	shader.get_index_for_named_shader_attr(name)
 
    shader.get_uniform_
+
+   Next steps for indexed rendering
+   	X Instanced rendering with no params and offset via gl_InstanceID
+	* Uncomment circlesToBuffer and fix it
+	* Figure out memory model for Buffer(VBO)s
 */
 
 float[] computeCircleVertexes (int n) {
@@ -107,7 +112,7 @@ class Shape {
 		program.uniform3fv("color",  c.color);
 
 		// glDrawArrays(GL_TRIANGLE_FAN, 0, numVertices/2);
-		glDrawArrays(GL_LINE_LOOP, 0, numVertices/2);
+		glDrawArraysInstanced(GL_LINE_LOOP, 0, numVertices/2, 5);
     }
     void teardown() {
 		glDisableVertexAttribArray(attrPosition);
@@ -128,17 +133,18 @@ class Renderer {
 	Lens lens = { 0, 0, 0, 0};
 
 	this() {
-		circleShape = new Shape("circle", `
-			#version 120
+		circleShape = new Shape("circle",
+			`#version 330
 			vertex:
-			attribute vec2 position;
+			in vec2 position;
 			uniform vec2   offset;
 			uniform float  radius;
 			uniform vec2   lens_offset;
 			uniform vec2   lens_scales;
+
 			void main(void) {
 				gl_Position = vec4(
-					(position * radius + offset - lens_offset) / lens_scales,
+					gl_InstanceID * (position * radius + offset - lens_offset) / lens_scales,
 					0, 1);
 			}
 			fragment:
